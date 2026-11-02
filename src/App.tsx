@@ -35,17 +35,17 @@ const MainLayout: React.FC = () => {
     : activeTab;
 
   return (
-    <div className="min-h-screen bg-[#161922] flex flex-col text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-[#161922] flex flex-col text-slate-100 font-sans selection:bg-emerald-500 selection:text-white pb-20 lg:pb-0">
       {/* Top Header with PANDIR STORE Logo and System Indicators */}
       <Header />
 
       {/* Responsive Content Body */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row">
         {/* Navigation Sidebar for Desktop & Bottom Bar for Mobile */}
         <Navigation activeTab={currentTab} setActiveTab={setActiveTab} />
 
         {/* Dynamic Page Views */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 w-full">
           {currentTab === 'pos' && <POSPage />}
           {currentTab === 'transactions' && <TransactionsPage />}
           {currentTab === 'inventory' && <InventoryPage />}
