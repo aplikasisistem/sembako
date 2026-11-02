@@ -35,7 +35,7 @@ const MainLayout: React.FC = () => {
     : activeTab;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col text-slate-800">
+    <div className="min-h-screen bg-[#121212] flex flex-col text-zinc-100 font-sans">
       {/* Top Header with PANDIR STORE Logo and System Indicators */}
       <Header />
 

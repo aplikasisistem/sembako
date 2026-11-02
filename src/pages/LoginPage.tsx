@@ -40,76 +40,82 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 relative overflow-hidden selection:bg-emerald-500 selection:text-white">
-      {/* Refined Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-emerald-600" />
-      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-50 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-slate-100 blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden selection:bg-emerald-500 selection:text-white font-sans">
+      {/* Refined Subtle Dark Glow */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-emerald-950/30 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-zinc-900/60 blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-[400px] bg-white rounded-2xl p-7 sm:p-10 shadow-xl shadow-slate-200/60 relative z-10 border border-slate-100">
+      <div className="w-full max-w-[420px] bg-[#18181b] rounded-2xl p-7 sm:p-9 shadow-2xl relative z-10 border border-zinc-800">
         
-        {/* PANDIR STORE Brand Header */}
+        {/* PANDIR STORE Brand Header with New Monogram Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-4 shadow-sm">
-            <Store className="w-10 h-10 text-emerald-500" />
+          <div className="w-24 h-24 mx-auto rounded-2xl bg-white/95 p-2 flex items-center justify-center mb-4 shadow-md border border-zinc-700/60 overflow-hidden">
+            <img 
+              src="/assets/aistudio/logo_6f62622a.png" 
+              alt="PANDIR STORE" 
+              className="w-full h-full object-contain" 
+            />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+          <h1 className="text-2xl font-black text-zinc-100 tracking-tight leading-none">
             PANDIR STORE
           </h1>
-          <p className="text-[13px] text-slate-400 font-medium mt-2">
-            PWA POS & Manajemen Toko
+          <p className="text-[12px] text-zinc-400 font-medium mt-2">
+            PWA POS & Manajemen Toko Sembako
           </p>
         </div>
 
         {/* Error Banners */}
         {sessionRevokedMessage && (
-          <div className="mb-5 bg-red-50 border border-red-100 text-red-700 p-3 rounded-xl text-[11px] font-bold flex items-start gap-2.5 animate-in fade-in slide-in-from-top-1">
-            <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+          <div className="mb-5 bg-rose-950/40 border border-rose-900/60 text-rose-300 p-3 rounded-xl text-[11px] font-bold flex items-start gap-2.5 animate-in fade-in slide-in-from-top-1">
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             <span>{sessionRevokedMessage}</span>
           </div>
         )}
 
         {error && (
-          <div className="mb-5 bg-red-50 border border-red-100 text-red-700 p-3 rounded-xl text-[11px] font-bold flex items-center gap-2.5 animate-in fade-in">
-            <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+          <div className="mb-5 bg-rose-950/40 border border-rose-900/60 text-rose-300 p-3 rounded-xl text-[11px] font-bold flex items-center gap-2.5 animate-in fade-in">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5 ml-1">
+            <label className="text-[11px] font-extrabold uppercase tracking-wider text-zinc-400 block mb-1.5 ml-1">
               Email / Username
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-300 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoFocus
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:ring-1 focus:ring-emerald-500 focus:bg-white outline-none transition"
+                placeholder="admin@pandirstore.com"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#222226] border border-zinc-700/60 rounded-xl text-sm font-semibold text-zinc-100 placeholder:text-zinc-500 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-[#27272a] outline-none transition"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block mb-1.5 ml-1">
+            <label className="text-[11px] font-extrabold uppercase tracking-wider text-zinc-400 block mb-1.5 ml-1">
               Kata Sandi
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-300 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:ring-1 focus:ring-emerald-500 focus:bg-white outline-none transition"
+                placeholder="••••••••"
+                className="w-full pl-10 pr-10 py-2.5 bg-[#222226] border border-zinc-700/60 rounded-xl text-sm font-semibold text-zinc-100 placeholder:text-zinc-500 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-[#27272a] outline-none transition"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 transition"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -119,16 +125,16 @@ export const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-sm transition active:scale-95 disabled:opacity-50"
+            className="w-full mt-2 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 shadow-sm transition active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             <span>{isLoading ? 'Masuk...' : 'Masuk ke Kasir'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-[0.1em]">
-            Vercel Powered • Enterprise Cloud POS
+        <div className="mt-8 text-center pt-4 border-t border-zinc-800">
+          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.1em]">
+            PANDIR STORE POS • Scale Smart
           </p>
         </div>
       </div>
