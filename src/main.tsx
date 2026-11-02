@@ -6,7 +6,11 @@
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { registerServiceWorker } from './utils/pwaRegistration';
 import './index.css';
+
+// Register PWA Service Worker with auto-update
+registerServiceWorker();
 
 // Global Runtime Error Catcher
 window.onerror = (message, source, lineno, colno, error) => {

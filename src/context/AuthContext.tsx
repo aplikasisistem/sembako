@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserAccount } from '../types';
-import { auth, db, initFirebaseService } from '../services/firebase';
+import { initFirebaseService } from '../services/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc, getDocFromCache, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
 interface AuthContextType {
   currentUser: UserAccount | null;
@@ -17,6 +17,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // 1. Instant LocalStorage Hydration: Zero-delay initial state for PWA Home Screen launch
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => {
     try {
       const saved = localStorage.getItem('pandir_current_user');
@@ -29,10 +30,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
 
   const [sessionRevokedMessage, setSessionRevokedMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  // If we already have a cached user in localStorage, set loading=false immediately so UI renders without delay!
+  const [loading, setLoading] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('pandir_current_user');
+      return !saved || saved === 'undefined' || saved === 'null';
+    } catch {
+      return true;
+    }
+  });
 
-  // 1. Firebase Auth Observer - Source of Truth
+  // 2. Non-blocking Firebase Auth Observer & Firestore profile sync in background
   useEffect(() => {
+    let unsubscribeProfile: (() => void) | undefined = undefined;
+
     const { isConfigured, auth: firebaseAuth, db: firestoreDb } = initFirebaseService();
     if (!isConfigured || !firebaseAuth || !firestoreDb) {
       setLoading(false);
@@ -44,8 +55,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // User is signed in, fetch full profile from Firestore
         const userDocRef = doc(firestoreDb, 'users', authUser.uid);
         
-        // Use a snapshot listener for the active user profile to catch role/status changes instantly
-        const unsubscribeProfile = onSnapshot(userDocRef, (snapshot) => {
+        // Use a snapshot listener for active profile sync
+        unsubscribeProfile = onSnapshot(userDocRef, (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.data();
             if (data.status === 'disabled') {
@@ -67,8 +78,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               localStorage.setItem('pandir_current_user', JSON.stringify(fullUser));
             }
           } else {
-            // Document doesn't exist in Firestore yet (e.g. first login)
-            // Use Auth data as fallback
             const fallbackUser: UserAccount = {
               id: authUser.uid,
               email: authUser.email || '',
@@ -79,8 +88,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             };
             setCurrentUser(fallbackUser);
             localStorage.setItem('pandir_current_user', JSON.stringify(fallbackUser));
-            
-            // Auto-create missing profile
             setDoc(userDocRef, { ...fallbackUser, updatedAt: new Date().toISOString() }, { merge: true });
           }
           setLoading(false);
@@ -88,17 +95,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.error('[AuthContext] Profile sync error:', error);
           setLoading(false);
         });
-
-        return () => unsubscribeProfile();
       } else {
-        // User is signed out
+        // If not authenticated via Firebase auth and no offline local user, clear
         setCurrentUser(null);
         localStorage.removeItem('pandir_current_user');
         setLoading(false);
       }
     });
 
-    return () => unsubscribeAuth();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+    };
   }, []);
 
   const login = async (identifier: string, pass: string): Promise<{ success: boolean; error?: string }> => {
@@ -113,7 +121,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       await signInWithEmailAndPassword(firebaseAuth, emailToAuth, pass);
-      // onAuthStateChanged will handle the rest
       return { success: true };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -153,7 +160,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         clearSessionMessage,
       }}
     >
-      {!loading && children}
+      {loading && !currentUser ? (
+        <div className="min-h-screen bg-[#161922] flex flex-col items-center justify-center p-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-emerald-400 flex items-center justify-center text-white text-2xl font-black shadow-xl animate-pulse mb-4">
+            PS
+          </div>
+          <h2 className="text-base font-bold text-slate-100 tracking-tight">PANDIR STORE</h2>
+          <p className="text-xs text-slate-400 mt-1">Memuat sesi toko...</p>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };
@@ -165,4 +182,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

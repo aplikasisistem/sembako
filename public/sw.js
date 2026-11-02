@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pandir-store-v1.0.8';
+const CACHE_NAME = 'pandir-store-v1.1.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -8,24 +8,27 @@ const STATIC_ASSETS = [
   '/icon-512.png'
 ];
 
+// 1. Install Event: Cache core static assets & skip waiting immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('PWA Precache warning:', err);
+        console.warn('[SW] Precache warning:', err);
       });
     })
   );
-  // Do not wait immediately unless user triggers skipWaiting
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
 });
 
+// 2. Activate Event: Clean up old caches and claim all clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[SW] Deleting old cache:', key);
+            console.log('[SW] Deleting obsolete cache:', key);
             return caches.delete(key);
           }
         })
@@ -34,38 +37,42 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// 3. Message handler for skip waiting prompt
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
+// 4. Fetch Event: Network-First for navigation / HTML and Stale-While-Revalidate for assets
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   
-  // Skip non-GET requests and chrome-extension / firestore api calls
+  // Skip non-GET requests and external APIs (Firestore / Auth / Google Script)
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
 
-  // Skip Firestore and external APIs from SW cache
   if (
     url.origin.includes('firestore.googleapis.com') ||
     url.origin.includes('identitytoolkit.googleapis.com') ||
+    url.origin.includes('securetoken.googleapis.com') ||
     url.origin.includes('script.google.com')
   ) {
     return;
   }
 
-  // Stale-While-Revalidate or Network First for HTML
-  if (request.mode === 'navigate') {
+  // Network-First strategy for HTML / Navigation requests to prevent stale code on Home Screen reload
+  if (request.mode === 'navigate' || request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/') {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
-          return response;
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return networkResponse;
         })
         .catch(async () => {
           const cachedResponse = await caches.match(request);
@@ -76,7 +83,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Asset caching (Stale While Revalidate)
+  // Stale-While-Revalidate strategy for static assets, JS, CSS, and images
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request)
