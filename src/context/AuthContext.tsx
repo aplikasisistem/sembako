@@ -30,35 +30,49 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
 
   const [sessionRevokedMessage, setSessionRevokedMessage] = useState<string | null>(null);
-  // If we already have a cached user in localStorage, set loading=false immediately so UI renders without delay!
+  
+  // CRITICAL FIX: Always start loading as FALSE if we have a cached user, 
+  // or set a strict maximum timeout (e.g., 600ms) so the PWA never hangs on cold start when opened from Home Screen.
   const [loading, setLoading] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('pandir_current_user');
       return !saved || saved === 'undefined' || saved === 'null';
     } catch {
-      return true;
+      return false;
     }
   });
 
-  // 2. Non-blocking Firebase Auth Observer & Firestore profile sync in background
+  // 2. Non-blocking Firebase Auth Observer with a strict safety timeout for poor mobile network / cold start
   useEffect(() => {
     let unsubscribeProfile: (() => void) | undefined = undefined;
+    let isResolved = false;
+
+    // Safety timeout: Never let auth check block the app for more than 800ms on mobile home screen launch
+    const safetyTimer = setTimeout(() => {
+      if (!isResolved) {
+        isResolved = true;
+        setLoading(false);
+      }
+    }, 800);
 
     const { isConfigured, auth: firebaseAuth, db: firestoreDb } = initFirebaseService();
     if (!isConfigured || !firebaseAuth || !firestoreDb) {
+      clearTimeout(safetyTimer);
       setLoading(false);
       return;
     }
 
     const unsubscribeAuth = firebaseAuth.onAuthStateChanged(async (authUser) => {
+      if (isResolved && currentUser) return; // Already resolved via local cache or timeout
+      
       if (authUser) {
-        // User is signed in, fetch full profile from Firestore
         const userDocRef = doc(firestoreDb, 'users', authUser.uid);
         
-        // Use a snapshot listener for active profile sync
-        unsubscribeProfile = onSnapshot(userDocRef, (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
+        // Single getDoc first for lightning fast non-blocking resolution on mobile
+        try {
+          const snap = await getDoc(userDocRef);
+          if (snap.exists()) {
+            const data = snap.data();
             if (data.status === 'disabled') {
               signOut(firebaseAuth);
               setCurrentUser(null);
@@ -90,20 +104,46 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem('pandir_current_user', JSON.stringify(fallbackUser));
             setDoc(userDocRef, { ...fallbackUser, updatedAt: new Date().toISOString() }, { merge: true });
           }
+        } catch (e) {
+          console.warn('[AuthContext] Fast profile fetch fallback:', e);
+        }
+
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(safetyTimer);
           setLoading(false);
-        }, (error) => {
-          console.error('[AuthContext] Profile sync error:', error);
-          setLoading(false);
-        });
+        }
+
+        // Setup background listener for role/status changes
+        unsubscribeProfile = onSnapshot(userDocRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            if (data.status === 'disabled') {
+              signOut(firebaseAuth);
+              setCurrentUser(null);
+              localStorage.removeItem('pandir_current_user');
+              setSessionRevokedMessage('Akun Anda telah dinonaktifkan oleh Administrator.');
+            }
+          }
+        }, () => {});
+
       } else {
-        // If not authenticated via Firebase auth and no offline local user, clear
-        setCurrentUser(null);
-        localStorage.removeItem('pandir_current_user');
-        setLoading(false);
+        // If Firebase says not signed in, but we have a valid offline local user, keep them logged in for offline PWA resilience!
+        const saved = localStorage.getItem('pandir_current_user');
+        if (!saved || saved === 'undefined' || saved === 'null') {
+          setCurrentUser(null);
+          localStorage.removeItem('pandir_current_user');
+        }
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(safetyTimer);
+          setLoading(false);
+        }
       }
     });
 
     return () => {
+      clearTimeout(safetyTimer);
       unsubscribeAuth();
       if (unsubscribeProfile) unsubscribeProfile();
     };

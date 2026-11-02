@@ -41,8 +41,8 @@ export const Header: React.FC = () => {
         </div>
       )}
 
-      {/* Main Header with Logo Integrity & Compact Mobile Height */}
-      <header className="bg-[#1e222b] border-b border-[#2f3646] sticky top-0 z-40 shadow-xs">
+      {/* Main Header with Logo Integrity & Compact Mobile Height & Safe Area Notch Padding */}
+      <header className="bg-[#1e222b] border-b border-[#2f3646] sticky top-0 z-40 shadow-xs pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="max-w-7xl mx-auto px-2.5 sm:px-6 h-13 sm:h-15 flex items-center justify-between gap-1.5 sm:gap-2">
           
           {/* Logo & Store Name - Compact & Proportional on Mobile */}

@@ -3,12 +3,18 @@
 @layer base {
   :root {
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --sat: env(safe-area-inset-top);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    --sar: env(safe-area-inset-right);
   }
 
   html {
     font-family: var(--font-sans);
     color-scheme: dark;
     background-color: #161922;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   body {
@@ -18,6 +24,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
+    height: 100dvh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   /* Ensure inputs, buttons, and textareas inherit Plus Jakarta Sans */
