@@ -18,6 +18,8 @@ import {
 } from 'firebase/firestore';
 import { getAuth, Auth, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { UserAccount } from '../types';
+import firebaseAppletConfig from '../../firebase-applet-config.json';
+import { INITIAL_USERS } from './seedData';
 
 export interface FirebaseConfig {
   apiKey?: string;
@@ -26,6 +28,7 @@ export interface FirebaseConfig {
   storageBucket?: string;
   messagingSenderId?: string;
   appId?: string;
+  firestoreDatabaseId?: string;
 }
 
 let firebaseApp: FirebaseApp | null = null;
@@ -34,7 +37,7 @@ let firebaseAuth: Auth | null = null;
 let isFirestoreInitialized = false;
 
 export function getActiveFirebaseConfig(): FirebaseConfig | null {
-  // Check localStorage override first, then env variables
+  // Check localStorage override first
   try {
     const saved = localStorage.getItem('pandir_firebase_config');
     if (saved) {
@@ -43,6 +46,16 @@ export function getActiveFirebaseConfig(): FirebaseConfig | null {
     }
   } catch {
     // Ignore storage parse error
+  }
+
+  // Use configuration from firebase-applet-config.json
+  if (
+    firebaseAppletConfig && 
+    firebaseAppletConfig.apiKey && 
+    firebaseAppletConfig.projectId && 
+    firebaseAppletConfig.apiKey !== 'AIzaSy...'
+  ) {
+    return firebaseAppletConfig;
   }
 
   const envApiKey = import.meta.env.VITE_FIREBASE_API_KEY;
@@ -56,6 +69,7 @@ export function getActiveFirebaseConfig(): FirebaseConfig | null {
       storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || `${envProjectId}.appspot.com`,
       messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '1234567890',
       appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:1234567890:web:abcdef',
+      firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || 'ai-studio-pandirstorepwapo-cbfd82a5-e27c-42fb-bc4b-eb4a9e237f30',
     };
   }
 
@@ -79,7 +93,8 @@ export function initFirebaseService(): {
       firebaseApp = getApp();
     }
 
-    firestoreDb = getFirestore(firebaseApp);
+    const databaseId = (config as any).firestoreDatabaseId || 'ai-studio-pandirstorepwapo-cbfd82a5-e27c-42fb-bc4b-eb4a9e237f30';
+    firestoreDb = getFirestore(firebaseApp, databaseId);
     firebaseAuth = getAuth(firebaseApp);
     setPersistence(firebaseAuth, browserLocalPersistence).catch(() => {});
 
@@ -150,6 +165,38 @@ export function listenToDocument<T>(
 
   window.addEventListener('storage', handleStorage);
   return () => window.removeEventListener('storage', handleStorage);
+}
+
+/**
+ * Real-time Collection Listener with automatic fallback
+ */
+export function listenToCollection<T extends { id: string }>(
+  collectionName: string,
+  callback: (data: T[]) => void
+): Unsubscribe {
+  const { isConfigured, db } = initFirebaseService();
+  if (isConfigured && db) {
+    try {
+      const colRef = collection(db, collectionName);
+      return onSnapshot(
+        colRef,
+        (snapshot) => {
+          const items: T[] = [];
+          snapshot.forEach((docSnap) => {
+            items.push({ id: docSnap.id, ...docSnap.data() } as T);
+          });
+          callback(items);
+        },
+        (err) => {
+          console.warn(`[Firebase] Collection listener notice on ${collectionName}:`, err);
+        }
+      );
+    } catch (e) {
+      console.warn(`[Firebase] Collection listener initialization error on ${collectionName}:`, e);
+    }
+  }
+
+  return () => {};
 }
 
 /**
@@ -293,44 +340,58 @@ export async function loginWithFirebase(
 
   let targetEmail = cleanId;
 
-  // 1. Resolve Username to Email if no '@' provided
+  // 1. Instant Username to Email Resolution (0ms network delay)
   if (!cleanId.includes('@')) {
-    let resolvedEmail: string | null = null;
-
-    if (isConfigured && db) {
-      try {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('username', '==', cleanId));
-        const snap = await getDocs(q);
-        if (!snap.empty) {
-          const uDoc = snap.docs[0].data();
-          if (uDoc.email) resolvedEmail = uDoc.email;
+    const seedMap: Record<string, string> = {
+      admin: 'admin@pandirstore.com',
+      kasir: 'kasir@pandirstore.com',
+      pandir: 'pandir@pandirstore.com',
+    };
+    if (seedMap[cleanId]) {
+      targetEmail = seedMap[cleanId];
+    } else {
+      if (typeof window !== 'undefined') {
+        try {
+          const localUsers: UserAccount[] = JSON.parse(localStorage.getItem('pandir_users') || '[]') || [];
+          const matched = localUsers.find(
+            (u) => (u.username && u.username.toLowerCase() === cleanId) || u.email.split('@')[0].toLowerCase() === cleanId
+          );
+          if (matched) targetEmail = matched.email;
+        } catch {
+          // ignore
         }
-      } catch (e) {
-        console.warn('[Firebase] Username Firestore lookup error:', e);
       }
     }
-
-    // Check local storage users cache if not resolved via Firestore
-    if (!resolvedEmail && typeof window !== 'undefined') {
-      try {
-        const localUsers: UserAccount[] = JSON.parse(localStorage.getItem('pandir_users') || '[]');
-        const matched = localUsers.find(
-          (u) => (u.username && u.username.toLowerCase() === cleanId) || u.email.split('@')[0].toLowerCase() === cleanId
-        );
-        if (matched) {
-          resolvedEmail = matched.email;
-        }
-      } catch {
-        // ignore
-      }
+    if (!targetEmail.includes('@')) {
+      targetEmail = `${cleanId}@pandirstore.com`;
     }
-
-    if (!resolvedEmail) {
-      throw new Error('Email atau username tidak ditemukan.');
-    }
-    targetEmail = resolvedEmail.toLowerCase();
   }
+
+  // Helper for local seed / offline accounts match
+  const findLocalUserMatch = (): UserAccount | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const storedUsers: UserAccount[] = JSON.parse(localStorage.getItem('pandir_users') || '[]') || [];
+      const userList = [...INITIAL_USERS, ...storedUsers];
+      const matched = userList.find(
+        (u) =>
+          u.email.toLowerCase() === targetEmail ||
+          (u.username && u.username.toLowerCase() === cleanId) ||
+          u.email.split('@')[0].toLowerCase() === cleanId
+      );
+
+      if (matched && (matched.password === pass || !matched.password)) {
+        if (matched.status === 'disabled') {
+          throw new Error('Akun Anda tidak aktif. Silakan hubungi Administrator.');
+        }
+        const { password, ...safeUser } = matched;
+        return safeUser as UserAccount;
+      }
+    } catch (e) {
+      if (e instanceof Error && e.message.includes('tidak aktif')) throw e;
+    }
+    return null;
+  };
 
   // 2. Perform Firebase Auth login if service is configured
   if (isConfigured && auth) {
@@ -338,89 +399,74 @@ export async function loginWithFirebase(
       const userCredential = await signInWithEmailAndPassword(auth, targetEmail, pass);
       const authUser = userCredential.user;
       const emailLower = (authUser.email || targetEmail).toLowerCase();
+      const isSuper = emailLower === 'pandir@pandirstore.com' || emailLower === 'admin@pandirstore.com' || cleanId === 'admin' || cleanId === 'pandir';
 
-      // 3. Fast retrieve user profile document with 1s timeout race
-      let userProfile: UserAccount | null = null;
+      // Check for cached profile in localStorage for instant hydration
+      let cachedProfile: UserAccount | null = null;
+      try {
+        const saved = localStorage.getItem('pandir_current_user');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.id === authUser.uid) {
+            cachedProfile = parsed;
+          }
+        }
+      } catch {
+        // ignore
+      }
+
+      // Build instant user profile immediately (NO network wait blocking return!)
+      const instantProfile: UserAccount = cachedProfile || {
+        id: authUser.uid,
+        email: authUser.email || targetEmail,
+        name: authUser.displayName || (isSuper ? 'Pemilik Toko (Admin Super)' : 'Kasir Toko'),
+        role: isSuper ? 'admin' : 'kasir',
+        username: cleanId,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+      };
+
+      // 3. Background Non-Blocking Firestore Profile Sync
       if (db) {
-        try {
-          const userDocRef = doc(db, 'users', authUser.uid);
-          const userDocSnap = await Promise.race([
-            getDoc(userDocRef),
-            new Promise<null>((resolve) => setTimeout(() => resolve(null), 1000)),
-          ]);
-          if (userDocSnap && userDocSnap.exists()) {
-            const data = userDocSnap.data();
-            userProfile = {
+        const userDocRef = doc(db, 'users', authUser.uid);
+        getDoc(userDocRef).then((snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            const updatedProfile: UserAccount = {
               id: authUser.uid,
               email: authUser.email || targetEmail,
-              name: data.name || authUser.displayName || (data.role === 'admin' ? 'Pemilik Toko (Admin Super)' : 'Kasir Toko'),
-              role: data.role || 'kasir',
-              username: data.username,
+              name: data.name || authUser.displayName || instantProfile.name,
+              role: data.role || instantProfile.role,
+              username: data.username || cleanId,
               status: data.status || 'active',
-              createdAt: data.createdAt || new Date().toISOString(),
+              createdAt: data.createdAt || instantProfile.createdAt,
               updatedAt: data.updatedAt,
             };
-          }
-        } catch (err) {
-          console.warn('[Firebase] Error reading user profile doc from Firestore:', err);
-        }
-      }
-
-      // Fallback profile if Firestore doc fetch times out or doesn't exist yet
-      if (!userProfile) {
-        const isSuper = emailLower === 'pandir@pandirstore.com' || emailLower === 'admin@pandirstore.com';
-        userProfile = {
-          id: authUser.uid,
-          email: authUser.email || targetEmail,
-          name: authUser.displayName || (isSuper ? 'Pemilik Toko (Admin Super)' : 'Kasir Toko'),
-          role: isSuper ? 'admin' : 'kasir',
-          status: 'active',
-          createdAt: new Date().toISOString(),
-        };
-        if (db) {
-          syncDocToFirestore('users', authUser.uid, userProfile as unknown as Record<string, unknown>);
-        }
-      }
-
-      // 4. Verify account active status
-      if (userProfile.status !== 'active') {
-        await signOut(auth);
-        throw new Error('Akun Anda tidak aktif. Silakan hubungi Administrator.');
-      }
-
-      return userProfile;
-    } catch (err: unknown) {
-      // Final attempt: check local storage users cache if Firebase Auth fails
-      if (typeof window !== 'undefined') {
-        try {
-          const localUsers: UserAccount[] = JSON.parse(localStorage.getItem('pandir_users') || '[]');
-          const matched = localUsers.find(
-            (u) =>
-              u.email.toLowerCase() === targetEmail ||
-              (u.username && u.username.toLowerCase() === cleanId) ||
-              u.email.split('@')[0].toLowerCase() === cleanId
-          );
-
-          if (matched && matched.password === pass) {
-            if (matched.status === 'disabled') {
-              throw new Error('Akun Anda tidak aktif. Silakan hubungi Administrator.');
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('pandir_current_user', JSON.stringify(updatedProfile));
             }
-            const { password, ...safeUser } = matched;
-            return safeUser as UserAccount;
+          } else {
+            // First time login - seed Firestore user document asynchronously
+            setDoc(userDocRef, { ...instantProfile, updatedAt: new Date().toISOString() }, { merge: true }).catch(() => {});
           }
-        } catch {
-          // ignore local check error
-        }
+        }).catch((err) => {
+          console.warn('[Firebase] Background profile sync error:', err);
+        });
+      }
+
+      return instantProfile;
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message.includes('tidak aktif')) {
+        throw err;
+      }
+
+      // Local fallback for offline / seed accounts
+      const localMatched = findLocalUserMatch();
+      if (localMatched) {
+        return localMatched;
       }
 
       if (err instanceof Error) {
-        if (
-          err.message === 'Email atau username tidak ditemukan.' ||
-          err.message === 'Akun Anda tidak aktif. Silakan hubungi Administrator.'
-        ) {
-          throw err;
-        }
-
         const code = (err as { code?: string }).code || '';
         if (
           code === 'auth/invalid-credential' ||
@@ -442,24 +488,12 @@ export async function loginWithFirebase(
     }
   }
 
-  // 5. Offline fallback if Firebase Auth is not configured
-  if (typeof window !== 'undefined') {
-    const localUsers: UserAccount[] = JSON.parse(localStorage.getItem('pandir_users') || '[]');
-    const matched = localUsers.find(
-      (u) => u.email.toLowerCase() === targetEmail || (u.username && u.username.toLowerCase() === cleanId)
-    );
-    if (!matched) {
-      throw new Error('Email/Username atau Kata Sandi salah.');
-    }
-    if (matched.status === 'disabled') {
-      throw new Error('Akun Anda tidak aktif. Silakan hubungi Administrator.');
-    }
-    if (matched.password && matched.password !== pass) {
-      throw new Error('Email/Username atau Kata Sandi salah.');
-    }
-    return matched;
+  // 4. Offline fallback if Firebase Auth is not configured
+  const localMatched = findLocalUserMatch();
+  if (localMatched) {
+    return localMatched;
   }
 
-  throw new Error('Sistem autentikasi tidak tersedia.');
+  throw new Error('Email/Username atau Kata Sandi salah.');
 }
 

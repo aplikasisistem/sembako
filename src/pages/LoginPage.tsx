@@ -132,8 +132,37 @@ export const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center pt-4 border-t border-[#32384a]">
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">
+        {/* Quick Demo Fill Buttons */}
+        <div className="mt-6 pt-4 border-t border-[#32384a] space-y-2">
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center">
+            Pintasan Masuk Cepat:
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin');
+                setPassword('admin123');
+              }}
+              className="px-2.5 py-1.5 bg-[#1e2330] hover:bg-[#2c3345] text-slate-200 border border-[#32384a] rounded-lg text-xs font-bold transition text-center"
+            >
+              👑 Admin (admin)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('kasir');
+                setPassword('kasir123');
+              }}
+              className="px-2.5 py-1.5 bg-[#1e2330] hover:bg-[#2c3345] text-slate-200 border border-[#32384a] rounded-lg text-xs font-bold transition text-center"
+            >
+              🛒 Kasir (kasir)
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em]">
             PANDIR STORE POS • Scale Smart
           </p>
         </div>

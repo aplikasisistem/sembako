@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserAccount } from '../types';
-import { initFirebaseService } from '../services/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { initFirebaseService, loginWithFirebase } from '../services/firebase';
+import { signOut } from 'firebase/auth';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 interface AuthContextType {
   currentUser: UserAccount | null;
@@ -31,8 +31,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const [sessionRevokedMessage, setSessionRevokedMessage] = useState<string | null>(null);
   
-  // CRITICAL FIX: Always start loading as FALSE if we have a cached user, 
-  // or set a strict maximum timeout (e.g., 600ms) so the PWA never hangs on cold start when opened from Home Screen.
+  // Start loading as FALSE if we have a cached user for instant app launch
   const [loading, setLoading] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('pandir_current_user');
@@ -42,18 +41,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   });
 
-  // 2. Non-blocking Firebase Auth Observer with a strict safety timeout for poor mobile network / cold start
+  // 2. Non-blocking Firebase Auth Observer with safety timeout for mobile PWA
   useEffect(() => {
     let unsubscribeProfile: (() => void) | undefined = undefined;
     let isResolved = false;
 
-    // Safety timeout: Never let auth check block the app for more than 800ms on mobile home screen launch
+    // Safety timeout: max 400ms for background auth check
     const safetyTimer = setTimeout(() => {
       if (!isResolved) {
         isResolved = true;
         setLoading(false);
       }
-    }, 800);
+    }, 400);
 
     const { isConfigured, auth: firebaseAuth, db: firestoreDb } = initFirebaseService();
     if (!isConfigured || !firebaseAuth || !firestoreDb) {
@@ -62,82 +61,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return;
     }
 
-    const unsubscribeAuth = firebaseAuth.onAuthStateChanged(async (authUser) => {
-      if (isResolved && currentUser) return; // Already resolved via local cache or timeout
-      
+    const unsubscribeAuth = firebaseAuth.onAuthStateChanged((authUser) => {
+      if (!isResolved) {
+        isResolved = true;
+        clearTimeout(safetyTimer);
+        setLoading(false);
+      }
+
       if (authUser) {
         const userDocRef = doc(firestoreDb, 'users', authUser.uid);
-        
-        // Single getDoc first for lightning fast non-blocking resolution on mobile
-        try {
-          const snap = await getDoc(userDocRef);
-          if (snap.exists()) {
-            const data = snap.data();
-            if (data.status === 'disabled') {
-              signOut(firebaseAuth);
-              setCurrentUser(null);
-              localStorage.removeItem('pandir_current_user');
-              setSessionRevokedMessage('Akun Anda telah dinonaktifkan oleh Administrator.');
-            } else {
-              const fullUser: UserAccount = {
-                id: authUser.uid,
-                email: authUser.email || data.email || '',
-                name: data.name || authUser.displayName || 'Pengguna',
-                role: data.role || 'kasir',
-                status: 'active',
-                createdAt: data.createdAt,
-                updatedAt: data.updatedAt,
-              };
-              setCurrentUser(fullUser);
-              localStorage.setItem('pandir_current_user', JSON.stringify(fullUser));
-            }
-          } else {
-            const fallbackUser: UserAccount = {
-              id: authUser.uid,
-              email: authUser.email || '',
-              name: authUser.displayName || 'Pengguna',
-              role: (authUser.email === 'pandir@pandirstore.com' || authUser.email === 'admin@pandirstore.com') ? 'admin' : 'kasir',
-              status: 'active',
-              createdAt: new Date().toISOString(),
-            };
-            setCurrentUser(fallbackUser);
-            localStorage.setItem('pandir_current_user', JSON.stringify(fallbackUser));
-            setDoc(userDocRef, { ...fallbackUser, updatedAt: new Date().toISOString() }, { merge: true });
-          }
-        } catch (e) {
-          console.warn('[AuthContext] Fast profile fetch fallback:', e);
-        }
 
-        if (!isResolved) {
-          isResolved = true;
-          clearTimeout(safetyTimer);
-          setLoading(false);
-        }
-
-        // Setup background listener for role/status changes
+        // Listen for background profile changes (role updates, account disabling)
         unsubscribeProfile = onSnapshot(userDocRef, (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.data();
             if (data.status === 'disabled') {
-              signOut(firebaseAuth);
+              signOut(firebaseAuth).catch(() => {});
               setCurrentUser(null);
               localStorage.removeItem('pandir_current_user');
               setSessionRevokedMessage('Akun Anda telah dinonaktifkan oleh Administrator.');
+            } else {
+              setCurrentUser((prev) => {
+                const fullUser: UserAccount = {
+                  id: authUser.uid,
+                  email: authUser.email || data.email || prev?.email || '',
+                  name: data.name || authUser.displayName || prev?.name || 'Pengguna',
+                  role: data.role || prev?.role || 'kasir',
+                  username: data.username || prev?.username,
+                  status: 'active',
+                  createdAt: data.createdAt || prev?.createdAt,
+                  updatedAt: data.updatedAt,
+                };
+                localStorage.setItem('pandir_current_user', JSON.stringify(fullUser));
+                return fullUser;
+              });
             }
           }
-        }, () => {});
+        }, (err) => {
+          console.warn('[AuthContext] Background profile listener notice:', err);
+        });
 
       } else {
-        // If Firebase says not signed in, but we have a valid offline local user, keep them logged in for offline PWA resilience!
+        // Only clear if not in localStorage cache
         const saved = localStorage.getItem('pandir_current_user');
         if (!saved || saved === 'undefined' || saved === 'null') {
           setCurrentUser(null);
-          localStorage.removeItem('pandir_current_user');
-        }
-        if (!isResolved) {
-          isResolved = true;
-          clearTimeout(safetyTimer);
-          setLoading(false);
         }
       }
     });
@@ -149,24 +117,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   }, []);
 
+  // 3. Instant Login Handler: Resolves in milliseconds and immediately navigates user to Kasir
   const login = async (identifier: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     setSessionRevokedMessage(null);
-    const cleanId = identifier.trim().toLowerCase();
-    const emailToAuth = cleanId.includes('@') ? cleanId : `${cleanId}@pandirstore.com`;
-
     try {
-      const { isConfigured, auth: firebaseAuth } = initFirebaseService();
-      if (!isConfigured || !firebaseAuth) {
-        return { success: false, error: 'Firebase belum dikonfigurasi.' };
-      }
-
-      await signInWithEmailAndPassword(firebaseAuth, emailToAuth, pass);
+      const userProfile = await loginWithFirebase(identifier, pass);
+      setCurrentUser(userProfile);
+      localStorage.setItem('pandir_current_user', JSON.stringify(userProfile));
       return { success: true };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes('auth/wrong-password') || msg.includes('auth/user-not-found') || msg.includes('invalid-credential')) {
-        return { success: false, error: 'Email/Username atau Kata Sandi salah.' };
-      }
       return { success: false, error: msg || 'Gagal masuk.' };
     }
   };

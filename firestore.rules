@@ -11,78 +11,90 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
-    }
-
     function isAdmin() {
-      return isSignedIn() && getUserData().role == 'admin';
-    }
-
-    function isKasir() {
-      return isSignedIn() && getUserData().role == 'kasir';
-    }
-
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
+      return isSignedIn() && (
+        request.auth.token.email == 'pandirstok.stok1250@gmail.com' ||
+        request.auth.token.email == 'pandir@pandirstore.com' ||
+        request.auth.token.email == 'admin@pandirstore.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'kasir') == 'admin')
+      );
     }
 
     // --- Collections ---
 
-    // Users: Only Admin can create/update/delete. Anyone signed in can read (for identification).
-    // Better: split PII, but for now we restrict update.
+    // Users: Users can read, create, and update their own document, or Admin can manage all users.
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow create, update, delete: if isAdmin();
+      allow create, update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
     }
 
-    // Products: Admin has full access. Kasir can read and update stock.
+    // Products: Signed in users can read, create, and update products/stock. Admin can delete.
     match /products/{productId} {
       allow read: if isSignedIn();
-      allow create, delete: if isAdmin();
-      allow update: if isAdmin() || (isKasir() && incoming().diff(existing()).affectedKeys().hasOnly(['stock', 'updatedAt']));
+      allow create, update: if isSignedIn();
+      allow delete: if isAdmin();
     }
 
-    // Transactions: Signed in can create and read.
+    // Categories: Signed in users can read and manage categories.
+    match /categories/{categoryId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Transactions: Signed in users can read and create. Admin can update/delete.
     match /transactions/{transactionId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
       allow update, delete: if isAdmin();
     }
 
-    // Customer Debts: Signed in can create and read.
+    // Customer Debts: Signed in users can read, create, and update installments.
     match /customer_debts/{debtId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update, delete: if isAdmin();
+      allow create, update: if isSignedIn();
+      allow delete: if isAdmin();
     }
 
-    // Petty Cash Logs: Signed in can create and read.
+    // Petty Cash Logs: Signed in users can read and create.
     match /petty_cash_logs/{logId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
       allow update, delete: if isAdmin();
     }
 
-    // Closing Reports: Signed in can create and read.
+    // Closing Reports: Signed in users can read and create.
     match /closing_reports/{reportId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
       allow update, delete: if isAdmin();
     }
 
-    // Settings: Only Admin can write. Anyone signed in can read.
+    // Capital Logs: Signed in users can read and create capital entries.
+    match /capital_logs/{logId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Stock Flow Logs: Signed in users can read and create stock audit logs.
+    match /stock_flow_logs/{logId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Stock Opname Reports: Signed in users can read and create stock opname reports.
+    match /stock_opname_reports/{reportId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Settings: Signed in users can read and update system settings.
     match /settings/{settingId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
     }
   }
 }

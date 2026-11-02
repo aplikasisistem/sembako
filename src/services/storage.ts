@@ -214,6 +214,7 @@ class StorageService {
   public saveCategories(categories: string[]) {
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
     window.dispatchEvent(new CustomEvent('pandir_data_updated', { detail: { key: 'categories' } }));
+    syncDocToFirestore('categories', 'main_list', { list: categories });
   }
 
   // --- TRANSACTIONS ---

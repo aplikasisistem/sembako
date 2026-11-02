@@ -16,8 +16,16 @@ import {
   StockOpnameReport
 } from '../types';
 import { storage } from '../services/storage';
-import { sendToGoogleSheetsWebhook, getActiveFirebaseConfig, clearAllFirestoreCollections } from '../services/firebase';
+import { 
+  sendToGoogleSheetsWebhook, 
+  getActiveFirebaseConfig, 
+  clearAllFirestoreCollections,
+  listenToCollection,
+  initFirebaseService,
+  syncDocToFirestore
+} from '../services/firebase';
 import { sound } from '../services/audio';
+import { Unsubscribe } from 'firebase/firestore';
 
 interface CheckoutData {
   paymentMethod: PaymentMethod;
@@ -149,7 +157,22 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
+    const flushOfflineQueue = () => {
+      const queue = storage.getOfflineQueue();
+      if (queue.length === 0) return;
+      queue.forEach((item) => {
+        if (item.type === 'transaction' && item.payload) {
+          const tx = item.payload as Transaction;
+          syncDocToFirestore('transactions', tx.id, tx as unknown as Record<string, unknown>);
+        }
+      });
+      storage.clearOfflineQueue();
+    };
+
+    const handleOnline = () => {
+      setIsOnline(true);
+      flushOfflineQueue();
+    };
     const handleOffline = () => setIsOnline(false);
     const handleDataUpdate = () => reloadAllData();
 
@@ -167,6 +190,140 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       window.removeEventListener('storage', handleDataUpdate);
     };
   }, [reloadAllData, settings.soundEnabled]);
+
+  // --- REAL-TIME MULTI-DEVICE FIRESTORE SYNC LISTENERS ---
+  useEffect(() => {
+    const { isConfigured, db } = initFirebaseService();
+    if (!isConfigured || !db || !isFirebaseActive) return;
+
+    const unsubs: Unsubscribe[] = [];
+
+    // 1. Real-time Products listener
+    unsubs.push(
+      listenToCollection<Product>('products', (cloudProducts) => {
+        if (cloudProducts && cloudProducts.length > 0) {
+          setProducts(cloudProducts);
+          storage.saveProducts(cloudProducts);
+        }
+      })
+    );
+
+    // 2. Real-time Transactions listener
+    unsubs.push(
+      listenToCollection<Transaction>('transactions', (cloudTxs) => {
+        if (cloudTxs) {
+          cloudTxs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          setTransactions(cloudTxs);
+          storage.saveTransactions(cloudTxs);
+        }
+      })
+    );
+
+    // 3. Real-time Customer Debts listener
+    unsubs.push(
+      listenToCollection<CustomerDebt>('customer_debts', (cloudDebts) => {
+        if (cloudDebts) {
+          cloudDebts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setDebts(cloudDebts);
+          storage.saveDebts(cloudDebts);
+        }
+      })
+    );
+
+    // 4. Real-time Petty Cash Logs listener
+    unsubs.push(
+      listenToCollection<PettyCashLog>('petty_cash_logs', (cloudLogs) => {
+        if (cloudLogs) {
+          cloudLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          setPettyCash(cloudLogs);
+          localStorage.setItem('pandir_petty_cash', JSON.stringify(cloudLogs));
+        }
+      })
+    );
+
+    // 5. Real-time Closing Reports listener
+    unsubs.push(
+      listenToCollection<ShiftClosingReport>('closing_reports', (cloudReports) => {
+        if (cloudReports) {
+          cloudReports.sort((a, b) => new Date(b.closedAt).getTime() - new Date(a.closedAt).getTime());
+          setClosingReports(cloudReports);
+          localStorage.setItem('pandir_closing_reports', JSON.stringify(cloudReports));
+        }
+      })
+    );
+
+    // 6. Real-time Capital Logs listener
+    unsubs.push(
+      listenToCollection<CapitalLog>('capital_logs', (cloudLogs) => {
+        if (cloudLogs) {
+          cloudLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          setCapitalLogs(cloudLogs);
+          localStorage.setItem('pandir_capital_logs', JSON.stringify(cloudLogs));
+        }
+      })
+    );
+
+    // 7. Real-time Stock Flow Logs listener
+    unsubs.push(
+      listenToCollection<StockFlowLog>('stock_flow_logs', (cloudLogs) => {
+        if (cloudLogs) {
+          cloudLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          setStockLogs(cloudLogs);
+          localStorage.setItem('pandir_stock_logs', JSON.stringify(cloudLogs));
+        }
+      })
+    );
+
+    // 8. Real-time Stock Opname Reports listener
+    unsubs.push(
+      listenToCollection<StockOpnameReport>('stock_opname_reports', (cloudReports) => {
+        if (cloudReports) {
+          cloudReports.sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
+          setStockOpnameReports(cloudReports);
+          storage.saveStockOpnameReports(cloudReports);
+        }
+      })
+    );
+
+    // 9. Real-time Categories listener
+    unsubs.push(
+      listenToCollection<{ id: string; name?: string; list?: string[] }>('categories', (docs) => {
+        if (docs && docs.length > 0) {
+          let catList: string[] = [];
+          if (docs[0].list && Array.isArray(docs[0].list)) {
+            catList = docs[0].list;
+          } else {
+            catList = docs.map((d) => d.name || d.id).filter(Boolean);
+          }
+          if (catList.length > 0) {
+            setCategories(catList);
+            storage.saveCategories(catList);
+          }
+        }
+      })
+    );
+
+    // 10. Real-time Settings listener
+    unsubs.push(
+      listenToCollection<SystemSettings & { id: string }>('settings', (docs) => {
+        if (docs && docs.length > 0) {
+          const storeDoc = docs.find((d) => d.id === 'store_config') || docs[0];
+          const { id, ...cloudSettings } = storeDoc;
+          if (Object.keys(cloudSettings).length > 0) {
+            setSettings((prev) => {
+              const merged = { ...prev, ...cloudSettings };
+              storage.saveSettings(merged);
+              return merged;
+            });
+          }
+        }
+      })
+    );
+
+    return () => {
+      unsubs.forEach((unsub) => unsub && unsub());
+    };
+  }, [isFirebaseActive]);
 
   // --- CART CALCULATIONS ---
   const cartTotalAmount = cart.reduce((acc, item) => acc + item.subtotal, 0);
