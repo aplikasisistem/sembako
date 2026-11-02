@@ -13,8 +13,9 @@
     font-family: var(--font-sans);
     color-scheme: dark;
     background-color: #161922;
-    height: 100dvh;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -24,10 +25,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
-    height: 100dvh;
-    overflow: hidden;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
     margin: 0;
     padding: 0;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Ensure inputs, buttons, and textareas inherit Plus Jakarta Sans */
