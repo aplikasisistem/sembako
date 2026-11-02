@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "UserAccount": {
+      "title": "User Account",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "kasir"] },
+        "username": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "disabled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "name", "role", "status", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Inventory product data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "baseUnit": { "type": "string" },
+        "stock": { "type": "number" },
+        "priceBase": { "type": "number" },
+        "costBase": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "code", "name", "category", "baseUnit", "stock", "priceBase", "costBase", "createdAt", "updatedAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Sales transaction data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invoiceNumber": { "type": "string" },
+        "cashierId": { "type": "string" },
+        "cashierName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "totalAmount": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "profit": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["tunai", "utang"] }
+      },
+      "required": ["id", "invoiceNumber", "cashierId", "cashierName", "timestamp", "totalAmount", "totalCost", "profit", "paymentMethod"]
+    },
+    "CustomerDebt": {
+      "title": "Customer Debt",
+      "description": "Unpaid transaction debt tracking",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "totalDebt": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "remainingAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["belum_lunas", "cicilan", "lunas"] },
+        "dueDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "transactionId", "customerName", "totalDebt", "paidAmount", "remainingAmount", "status", "dueDate"]
+    },
+    "PettyCashLog": {
+      "title": "Petty Cash Log",
+      "description": "Operational cash flow logs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["kas_masuk", "kas_keluar"] },
+        "amount": { "type": "number" },
+        "description": { "type": "string" },
+        "cashierName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "type", "amount", "description", "cashierName", "timestamp"]
+    },
+    "ShiftClosingReport": {
+      "title": "Shift Closing Report",
+      "description": "Daily shift closing data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "shiftDate": { "type": "string" },
+        "cashierName": { "type": "string" },
+        "physicalDrawerCash": { "type": "number" },
+        "expectedDrawerTotal": { "type": "number" },
+        "variance": { "type": "number" }
+      },
+      "required": ["id", "shiftDate", "cashierName", "physicalDrawerCash", "expectedDrawerTotal", "variance"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global application settings",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string" },
+        "storeAddress": { "type": "string" },
+        "targetWhatsApp": { "type": "string" }
+      },
+      "required": ["storeName"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserAccount",
+      "description": "User profiles and roles"
+    },
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "Inventory products"
+    },
+    "transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Sales records"
+    },
+    "customer_debts/{debtId}": {
+      "schema": "CustomerDebt",
+      "description": "Debt tracking"
+    },
+    "petty_cash_logs/{logId}": {
+      "schema": "PettyCashLog",
+      "description": "Cash flow logs"
+    },
+    "closing_reports/{reportId}": {
+      "schema": "ShiftClosingReport",
+      "description": "Closing reports"
+    },
+    "settings/{settingId}": {
+      "schema": "SystemSettings",
+      "description": "Global settings"
+    }
+  }
+}
