@@ -113,9 +113,9 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
 
   return (
     <>
-      {/* DESKTOP SIDEBAR - Deep Charcoal Dark Theme */}
-      <aside className="hidden lg:flex flex-col w-60 bg-[#18181b] border-r border-zinc-800 shrink-0 p-3 min-h-[calc(100vh-4rem)]">
-        <div className="text-[10px] font-black uppercase tracking-[0.1em] text-zinc-500 px-3 mb-3">
+      {/* DESKTOP SIDEBAR - Soft Dark Slate Theme */}
+      <aside className="hidden lg:flex flex-col w-60 bg-[#1e222b] border-r border-[#2f3646] shrink-0 p-3 min-h-[calc(100vh-3.75rem)]">
+        <div className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 px-3 mb-3">
           Sistem Menu
         </div>
         <nav className="space-y-1">
@@ -128,16 +128,16 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition group ${
                   isActive
-                    ? 'bg-zinc-800 text-zinc-100 border border-zinc-700 shadow-xs'
-                    : 'text-zinc-400 hover:bg-zinc-850 hover:text-zinc-200 hover:bg-zinc-800/40'
+                    ? 'bg-[#252a36] text-slate-100 border border-slate-600/60 shadow-xs'
+                    : 'text-slate-400 hover:bg-[#252a36]/60 hover:text-slate-200'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-zinc-500 group-hover:text-zinc-300'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                   <span>{item.label}</span>
                 </div>
                 {item.badge !== undefined && (
-                  <span className={`px-1.5 py-0.2 text-[9px] font-black rounded ${isActive ? 'bg-emerald-500 text-zinc-950 font-black' : (item.badgeColor || 'bg-zinc-800 text-zinc-400')}`}>
+                  <span className={`px-1.5 py-0.2 text-[9px] font-black rounded ${isActive ? 'bg-emerald-500 text-slate-950 font-black' : (item.badgeColor || 'bg-[#252a36] text-slate-300 border border-[#2f3646]')}`}>
                     {item.badge}
                   </span>
                 )}
@@ -148,13 +148,13 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
 
         {/* Low Stock Warning Pill if any */}
         {lowStockCount > 0 && (
-          <div className="mt-auto pt-4 border-t border-zinc-800">
+          <div className="mt-auto pt-4 border-t border-[#2f3646]">
             <div 
               onClick={() => setActiveTab('inventory')}
-              className="bg-amber-950/30 border border-amber-900/50 rounded-xl p-3 cursor-pointer hover:bg-amber-900/40 transition"
+              className="bg-amber-950/25 border border-amber-800/40 rounded-xl p-3 cursor-pointer hover:bg-amber-900/30 transition"
             >
               <div className="flex items-center gap-2 text-amber-400 text-xs font-bold mb-1">
-                <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>Peringatan Stok!</span>
               </div>
               <p className="text-[11px] text-amber-300/80">
@@ -166,8 +166,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
       </aside>
 
       {/* MOBILE BOTTOM NAVIGATION BAR (Width < 1024px) */}
-      {/* Adheres strictly to min 44px x 44px touch targets and scrollable for full access */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#18181b]/95 backdrop-blur-md border-t border-zinc-800 shadow-2xl px-2 py-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#1e222b]/95 backdrop-blur-md border-t border-[#2f3646] shadow-2xl px-2 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 max-w-xl mx-auto">
           {/* 1. Kasir */}
           <button

@@ -278,30 +278,30 @@ export const StockOpnamePage: React.FC = () => {
   return (
     <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-5 pb-24 lg:pb-8 font-sans">
       {/* Header Banner */}
-      <div className="bg-[#18181b] rounded-2xl p-4 sm:p-6 border border-zinc-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#252a36] rounded-2xl p-4 sm:p-6 border border-[#32384a] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 text-emerald-400 mb-1">
-            <ClipboardCheck className="w-6 h-6 stroke-[2.2]" />
-            <span className="text-xs font-black tracking-wider uppercase text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800/80">
+            <ClipboardCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+            <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800/80">
               Audit & Inventarisasi
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-zinc-100 tracking-tight">
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-100 tracking-tight">
             Stok Opname (SO) Sembako
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
             Pencocokan stok fisik riil toko dengan sistem, hitung selisih otomatis secara real-time, dan audit log penyesuaian.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center bg-[#222226] p-1 rounded-xl self-start md:self-center border border-zinc-750">
+        <div className="flex items-center bg-[#1e2330] p-1 rounded-xl self-start md:self-center border border-[#353e52]">
           <button
             onClick={() => setActiveSubTab('input')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition ${
               activeSubTab === 'input'
-                ? 'bg-zinc-800 text-zinc-100 shadow-sm border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200'
+                ? 'bg-[#2b3242] text-slate-100 shadow-sm border border-[#3d465c]'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <Layers className="w-4 h-4 text-emerald-400" />
@@ -311,14 +311,14 @@ export const StockOpnamePage: React.FC = () => {
             onClick={() => setActiveSubTab('history')}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition ${
               activeSubTab === 'history'
-                ? 'bg-zinc-800 text-zinc-100 shadow-sm border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200'
+                ? 'bg-[#2b3242] text-slate-100 shadow-sm border border-[#3d465c]'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <History className="w-4 h-4 text-emerald-400" />
             <span>Riwayat Opname</span>
             {stockOpnameReports.length > 0 && (
-              <span className="bg-zinc-700 text-zinc-200 text-[10px] px-1.5 py-0.2 rounded-full font-black">
+              <span className="bg-[#353e52] text-slate-200 text-[10px] px-1.5 py-0.2 rounded-full font-black">
                 {stockOpnameReports.length}
               </span>
             )}
@@ -347,13 +347,13 @@ export const StockOpnamePage: React.FC = () => {
         <div className="space-y-4">
           {/* Summary Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
-            <div className="bg-[#18181b] p-3 rounded-xl border border-zinc-800 shadow-xs">
-              <span className="text-[11px] font-semibold text-zinc-400 block">Total Produk</span>
-              <span className="text-xl font-black text-zinc-100">{stats.total}</span>
-              <span className="text-[10px] text-zinc-500 block">SKU Terdaftar</span>
+            <div className="bg-[#252a36] p-3 rounded-xl border border-[#32384a] shadow-xs">
+              <span className="text-[11px] font-semibold text-slate-400 block">Total Produk</span>
+              <span className="text-xl font-black text-slate-100">{stats.total}</span>
+              <span className="text-[10px] text-slate-500 block">SKU Terdaftar</span>
             </div>
 
-            <div className="bg-[#18181b] p-3 rounded-xl border border-emerald-900/40 shadow-xs bg-emerald-950/10">
+            <div className="bg-[#252a36] p-3 rounded-xl border border-emerald-900/40 shadow-xs bg-emerald-950/10">
               <span className="text-[11px] font-semibold text-emerald-400 block">Stok Sesuai</span>
               <div className="flex items-center gap-1.5">
                 <CheckCircle className="w-4 h-4 text-emerald-400" />
@@ -362,7 +362,7 @@ export const StockOpnamePage: React.FC = () => {
               <span className="text-[10px] text-emerald-400/80 block">Selisih = 0</span>
             </div>
 
-            <div className="bg-[#18181b] p-3 rounded-xl border border-rose-900/40 shadow-xs bg-rose-950/10">
+            <div className="bg-[#252a36] p-3 rounded-xl border border-rose-900/40 shadow-xs bg-rose-950/10">
               <span className="text-[11px] font-semibold text-rose-400 block">Selisih Kurang</span>
               <div className="flex items-center gap-1.5">
                 <ArrowDownRight className="w-4 h-4 text-rose-400" />
@@ -371,7 +371,7 @@ export const StockOpnamePage: React.FC = () => {
               <span className="text-[10px] text-rose-400/80 block">Stok Hilang / Rusak</span>
             </div>
 
-            <div className="bg-[#18181b] p-3 rounded-xl border border-sky-900/40 shadow-xs bg-sky-950/10">
+            <div className="bg-[#252a36] p-3 rounded-xl border border-sky-900/40 shadow-xs bg-sky-950/10">
               <span className="text-[11px] font-semibold text-sky-400 block">Selisih Lebih</span>
               <div className="flex items-center gap-1.5">
                 <ArrowUpRight className="w-4 h-4 text-sky-400" />
@@ -380,37 +380,37 @@ export const StockOpnamePage: React.FC = () => {
               <span className="text-[10px] text-sky-400/80 block">Surplus Fisik</span>
             </div>
 
-            <div className="bg-[#18181b] p-3 rounded-xl border border-amber-900/40 shadow-xs bg-amber-950/10 col-span-2 sm:col-span-1 lg:col-span-2">
+            <div className="bg-[#252a36] p-3 rounded-xl border border-amber-900/40 shadow-xs bg-amber-950/10 col-span-2 sm:col-span-1 lg:col-span-2">
               <span className="text-[11px] font-semibold text-amber-300 block">Total Nilai Selisih HPP</span>
-              <span className={`text-xl font-black ${stats.totalSelisihVal < 0 ? 'text-rose-400' : stats.totalSelisihVal > 0 ? 'text-sky-400' : 'text-zinc-100'}`}>
+              <span className={`text-xl font-black ${stats.totalSelisihVal < 0 ? 'text-rose-400' : stats.totalSelisihVal > 0 ? 'text-sky-400' : 'text-slate-100'}`}>
                 {stats.totalSelisihVal < 0 ? '-' : stats.totalSelisihVal > 0 ? '+' : ''}
                 Rp {Math.abs(stats.totalSelisihVal).toLocaleString('id-ID')}
               </span>
-              <span className="text-[10px] text-zinc-400 block">
+              <span className="text-[10px] text-slate-400 block">
                 {stats.diffCount} produk memerlukan penyesuaian
               </span>
             </div>
           </div>
 
           {/* Action Toolbar & Filters */}
-          <div className="bg-[#18181b] rounded-xl p-3.5 border border-zinc-800 shadow-xs space-y-3">
+          <div className="bg-[#252a36] rounded-xl p-3.5 border border-[#32384a] shadow-xs space-y-3">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               {/* Search & Filters */}
               <div className="flex flex-wrap items-center gap-2 flex-1">
                 {/* Search SKU or Name */}
                 <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
-                  <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Cari kode SKU atau nama barang..."
-                    className="w-full pl-9 pr-3 py-1.5 bg-[#222226] border border-zinc-700 rounded-lg text-xs font-medium text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition"
+                    className="w-full pl-9 pr-3 py-1.5 bg-[#1e2330] border border-[#353e52] rounded-lg text-xs font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 text-xs"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -419,11 +419,11 @@ export const StockOpnamePage: React.FC = () => {
 
                 {/* Category Dropdown */}
                 <div className="flex items-center gap-1.5">
-                  <Filter className="w-3.5 h-3.5 text-zinc-500" />
+                  <Filter className="w-3.5 h-3.5 text-slate-500" />
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="py-1.5 px-2.5 bg-[#222226] border border-zinc-700 rounded-lg text-xs font-semibold text-zinc-200 focus:outline-none focus:border-emerald-500"
+                    className="py-1.5 px-2.5 bg-[#1e2330] border border-[#353e52] rounded-lg text-xs font-semibold text-slate-200 focus:outline-none focus:border-emerald-500"
                   >
                     <option value="ALL">Semua Kategori</option>
                     {categoriesList.map((cat) => (
@@ -438,7 +438,7 @@ export const StockOpnamePage: React.FC = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="py-1.5 px-2.5 bg-[#222226] border border-zinc-700 rounded-lg text-xs font-semibold text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="py-1.5 px-2.5 bg-[#1e2330] border border-[#353e52] rounded-lg text-xs font-semibold text-slate-200 focus:outline-none focus:border-emerald-500"
                 >
                   <option value="ALL">Semua Status Selisih</option>
                   <option value="sesuai">Hanya Sesuai (0)</option>
@@ -447,12 +447,12 @@ export const StockOpnamePage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Quick Preset Buttons */}
-              <div className="flex items-center gap-2 flex-wrap">
+              {/* Quick Preset Buttons (Scrollable on mobile) */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
                 <button
                   type="button"
                   onClick={handleResetToSystem}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#222226] hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-bold rounded-lg transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1e2330] hover:bg-[#2b3242] text-slate-200 border border-[#353e52] text-xs font-bold rounded-lg transition shrink-0"
                   title="Salin semua nilai stok sistem ke stok fisik"
                 >
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -462,17 +462,17 @@ export const StockOpnamePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleResetToZero}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#222226] hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-bold rounded-lg transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1e2330] hover:bg-[#2b3242] text-slate-200 border border-[#353e52] text-xs font-bold rounded-lg transition shrink-0"
                   title="Kosongkan stok fisik menjadi 0 untuk hitung dari awal"
                 >
-                  <RotateCcw className="w-3.5 h-3.5 text-zinc-400" />
+                  <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
                   <span>Reset ke 0</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleExportCurrentTable}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-sm transition"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-sm transition shrink-0"
                   title="Unduh tabel hasil opname ke Excel (.xlsx) dengan rumus selisih"
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5 text-white" />
@@ -483,17 +483,17 @@ export const StockOpnamePage: React.FC = () => {
           </div>
 
           {/* MAIN OPNAME TABLE */}
-          <div className="bg-[#18181b] rounded-xl border border-zinc-800 shadow-sm overflow-hidden">
+          <div className="bg-[#252a36] rounded-xl border border-[#32384a] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#121212] text-zinc-300 font-bold tracking-wide uppercase text-[10px] border-b border-zinc-800">
+                <thead className="bg-[#1e222b] text-slate-300 font-bold tracking-wide uppercase text-[10px] border-b border-[#32384a]">
                   <tr>
                     <th className="px-3.5 py-3 w-10 text-center">No</th>
                     <th className="px-3.5 py-3 w-28">Kode / SKU</th>
                     <th className="px-3.5 py-3 min-w-[180px]">Nama Barang Sembako</th>
                     <th className="px-3.5 py-3 w-28">Kategori</th>
                     <th className="px-3.5 py-3 w-20 text-center">Satuan</th>
-                    <th className="px-3.5 py-3 w-28 text-right bg-zinc-900/80">Stok Sistem</th>
+                    <th className="px-3.5 py-3 w-28 text-right bg-[#1a1e28]">Stok Sistem</th>
                     <th className="px-3.5 py-3 w-32 text-center bg-emerald-950/40 text-emerald-300">
                       Stok Fisik
                     </th>
@@ -502,10 +502,10 @@ export const StockOpnamePage: React.FC = () => {
                     <th className="px-3.5 py-3 min-w-[180px]">Keterangan</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/60">
+                <tbody className="divide-y divide-[#32384a]/60">
                   {filteredOpnameItems.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="px-4 py-12 text-center text-zinc-500">
+                      <td colSpan={10} className="px-4 py-12 text-center text-slate-500">
                         Tidak ada barang yang cocok dengan filter.
                       </td>
                     </tr>
@@ -519,33 +519,33 @@ export const StockOpnamePage: React.FC = () => {
                       return (
                         <tr
                           key={item.productId}
-                          className={`hover:bg-zinc-800/40 transition ${
+                          className={`hover:bg-[#1e2330]/60 transition ${
                             isLess ? 'bg-rose-950/20' : isMore ? 'bg-sky-950/20' : ''
                           }`}
                         >
-                          <td className="px-3.5 py-2.5 text-center text-zinc-500 font-mono text-[11px]">
+                          <td className="px-3.5 py-2.5 text-center text-slate-500 font-mono text-[11px]">
                             {idx + 1}
                           </td>
-                          <td className="px-3.5 py-2.5 font-mono font-bold text-zinc-300">
+                          <td className="px-3.5 py-2.5 font-mono font-bold text-slate-300">
                             {item.productCode}
                           </td>
                           <td className="px-3.5 py-2.5">
-                            <span className="font-bold text-zinc-100 block text-xs">
+                            <span className="font-bold text-slate-100 block text-xs">
                               {item.productName}
                             </span>
-                            <span className="text-[10px] text-zinc-400">
+                            <span className="text-[10px] text-slate-400">
                               HPP: Rp {(item.costBase || 0).toLocaleString('id-ID')} / {item.unit}
                             </span>
                           </td>
-                          <td className="px-3.5 py-2.5 text-zinc-300">
-                            <span className="px-2 py-0.5 rounded bg-zinc-800 text-[10px] font-semibold text-zinc-300 border border-zinc-700/60">
+                          <td className="px-3.5 py-2.5 text-slate-300">
+                            <span className="px-2 py-0.5 rounded bg-[#1e2330] text-[10px] font-semibold text-slate-300 border border-[#353e52]">
                               {item.category}
                             </span>
                           </td>
-                          <td className="px-3.5 py-2.5 text-center text-zinc-400 font-bold uppercase text-[11px]">
+                          <td className="px-3.5 py-2.5 text-center text-slate-400 font-bold uppercase text-[11px]">
                             {item.unit}
                           </td>
-                          <td className="px-3.5 py-2.5 text-right font-mono font-bold text-zinc-200 bg-zinc-900/40">
+                          <td className="px-3.5 py-2.5 text-right font-mono font-bold text-slate-200 bg-[#1a1e28]">
                             {item.systemStock.toLocaleString('id-ID')}
                           </td>
                           <td className="px-3.5 py-2.5 text-center bg-emerald-950/20">
@@ -555,7 +555,7 @@ export const StockOpnamePage: React.FC = () => {
                               step="any"
                               value={item.physicalStock}
                               onChange={(e) => handlePhysicalStockChange(item.productId, e.target.value)}
-                              className="w-24 px-2 py-1.5 text-center font-mono font-black text-sm bg-[#222226] border border-zinc-700 rounded-lg text-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition"
+                              className="w-24 px-2 py-1.5 text-center font-mono font-black text-sm bg-[#1e2330] border border-[#353e52] rounded-lg text-emerald-400 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition"
                             />
                           </td>
                           <td className="px-3.5 py-2.5 text-right font-mono font-bold">
@@ -598,7 +598,7 @@ export const StockOpnamePage: React.FC = () => {
                               className={`w-full px-2.5 py-1 text-xs rounded-lg border transition ${
                                 hasDiff
                                   ? 'border-amber-500/50 bg-amber-950/20 text-amber-200 placeholder:text-amber-500/40'
-                                  : 'border-zinc-700 bg-[#222226] text-zinc-200 placeholder:text-zinc-600'
+                                  : 'border-[#353e52] bg-[#1e2330] text-slate-200 placeholder:text-slate-500'
                               } focus:border-emerald-500 focus:outline-none`}
                             />
                           </td>
@@ -611,11 +611,11 @@ export const StockOpnamePage: React.FC = () => {
             </div>
 
             {/* Bottom Summary Bar & Save Action */}
-            <div className="bg-[#121212] border-t border-zinc-800 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-xs text-zinc-400 flex items-center gap-2">
+            <div className="bg-[#1e222b] border-t border-[#32384a] p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-xs text-slate-400 flex items-center gap-2">
                 <Info className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>
-                  Ditemukan <strong className="text-zinc-200">{stats.diffCount} produk selisih</strong> dari total {stats.total} produk. Menekan tombol simpan akan langsung menyesuaikan stok di database dan dicatat di Audit Log Stok.
+                  Ditemukan <strong className="text-slate-200">{stats.diffCount} produk selisih</strong> dari total {stats.total} produk. Menekan tombol simpan akan langsung menyesuaikan stok di database dan dicatat di Audit Log Stok.
                 </span>
               </div>
 
@@ -640,33 +640,33 @@ export const StockOpnamePage: React.FC = () => {
       {activeSubTab === 'history' && (
         <div className="space-y-4">
           {/* Custom Date Range Picker Toolbar */}
-          <div className="bg-[#18181b] rounded-2xl p-4 sm:p-5 border border-zinc-800 shadow-sm space-y-4">
+          <div className="bg-[#252a36] rounded-2xl p-4 sm:p-5 border border-[#32384a] shadow-sm space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span className="text-xs font-bold text-zinc-200">Filter Rentang Tanggal:</span>
+                  <span className="text-xs font-bold text-slate-200">Filter Rentang Tanggal:</span>
                 </div>
 
                 {/* Dari Tanggal */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] text-zinc-400 font-medium">Dari:</span>
+                  <span className="text-[11px] text-slate-400 font-medium">Dari:</span>
                   <input
                     type="date"
                     value={historyStartDate}
                     onChange={(e) => setHistoryStartDate(e.target.value)}
-                    className="px-2.5 py-1.5 bg-[#222226] border border-zinc-700 rounded-lg text-xs font-bold text-zinc-100 focus:outline-none focus:border-emerald-500"
+                    className="px-2.5 py-1.5 bg-[#1e2330] border border-[#353e52] rounded-lg text-xs font-bold text-slate-100 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
 
                 {/* Sampai Tanggal */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] text-zinc-400 font-medium">Sampai:</span>
+                  <span className="text-[11px] text-slate-400 font-medium">Sampai:</span>
                   <input
                     type="date"
                     value={historyEndDate}
                     onChange={(e) => setHistoryEndDate(e.target.value)}
-                    className="px-2.5 py-1.5 bg-[#222226] border border-zinc-700 rounded-lg text-xs font-bold text-zinc-100 focus:outline-none focus:border-emerald-500"
+                    className="px-2.5 py-1.5 bg-[#1e2330] border border-[#353e52] rounded-lg text-xs font-bold text-slate-100 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -677,7 +677,7 @@ export const StockOpnamePage: React.FC = () => {
                   type="button"
                   onClick={handleExportHistoryToExcel}
                   disabled={filteredReports.length === 0}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-white text-xs font-bold rounded-xl shadow-sm transition"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-[#1e2330] disabled:text-slate-600 text-white text-xs font-bold rounded-xl shadow-sm transition"
                 >
                   <FileSpreadsheet className="w-4 h-4" />
                   <span>Download Excel Riwayat SO (.xlsx)</span>
@@ -685,43 +685,43 @@ export const StockOpnamePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Quick Preset Filter Pills */}
-            <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-zinc-800">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mr-1">
+            {/* Quick Preset Filter Pills (Scrollable on mobile) */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 pt-2 border-t border-[#32384a]">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mr-1 shrink-0">
                 Pilihan Cepat:
               </span>
               <button
                 type="button"
                 onClick={() => handleQuickDatePreset('today')}
-                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#222226] hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition"
+                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 border border-[#353e52] transition shrink-0"
               >
                 Hari Ini
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickDatePreset('7days')}
-                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#222226] hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition"
+                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 border border-[#353e52] transition shrink-0"
               >
                 7 Hari Terakhir
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickDatePreset('30days')}
-                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#222226] hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition"
+                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 border border-[#353e52] transition shrink-0"
               >
                 30 Hari Terakhir
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickDatePreset('month')}
-                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#222226] hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition"
+                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 border border-[#353e52] transition shrink-0"
               >
                 Bulan Ini
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickDatePreset('all')}
-                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#222226] hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition"
+                className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 border border-[#353e52] transition shrink-0"
               >
                 Semua Riwayat
               </button>
@@ -729,28 +729,28 @@ export const StockOpnamePage: React.FC = () => {
           </div>
 
           {/* History Reports List */}
-          <div className="bg-[#18181b] rounded-xl border border-zinc-800 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
+          <div className="bg-[#252a36] rounded-xl border border-[#32384a] shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-[#32384a] flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-zinc-100">
+                <h3 className="text-sm font-bold text-slate-100">
                   Daftar Sesi Stok Opname Selesai
                 </h3>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-slate-400">
                   Menampilkan {filteredReports.length} sesi pemeriksaan stok pada periode {historyStartDate} s/d {historyEndDate}
                 </p>
               </div>
             </div>
 
             {filteredReports.length === 0 ? (
-              <div className="p-12 text-center text-zinc-500 space-y-2">
-                <History className="w-8 h-8 text-zinc-600 mx-auto" />
+              <div className="p-12 text-center text-slate-500 space-y-2">
+                <History className="w-8 h-8 text-slate-600 mx-auto" />
                 <p className="text-sm font-medium">Belum ada riwayat Stok Opname pada rentang tanggal ini.</p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-slate-500">
                   Silakan ubah filter tanggal atau lakukan stok opname baru di tab "Formulir Input Opname".
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-zinc-800">
+              <div className="divide-y divide-[#32384a]">
                 {filteredReports.map((report) => {
                   const dt = new Date(report.date || report.createdAt);
                   const dateStr = dt.toLocaleDateString('id-ID', {
@@ -764,30 +764,30 @@ export const StockOpnamePage: React.FC = () => {
                   return (
                     <div
                       key={report.id}
-                      className="p-4 sm:p-5 hover:bg-zinc-800/30 transition flex flex-col md:flex-row md:items-center justify-between gap-4"
+                      className="p-4 sm:p-5 hover:bg-[#1e2330]/40 transition flex flex-col md:flex-row md:items-center justify-between gap-4"
                     >
                       <div className="space-y-1.5 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-mono font-black text-xs text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-md border border-emerald-800/60">
                             {report.opnameNumber}
                           </span>
-                          <span className="text-xs font-semibold text-zinc-300">
+                          <span className="text-xs font-semibold text-slate-300">
                             {dateStr} • {timeStr}
                           </span>
-                          <span className="text-[11px] text-zinc-400">
-                            oleh <strong className="text-zinc-200">{report.cashierName}</strong>
+                          <span className="text-[11px] text-slate-400">
+                            oleh <strong className="text-slate-200">{report.cashierName}</strong>
                           </span>
                         </div>
 
                         {report.notes && (
-                          <p className="text-xs text-zinc-400 italic">
+                          <p className="text-xs text-slate-400 italic">
                             Catatan: "{report.notes}"
                           </p>
                         )}
 
                         {/* Breakdown Badges */}
                         <div className="flex items-center gap-2 flex-wrap pt-1">
-                          <span className="text-[11px] font-bold text-zinc-300 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60">
+                          <span className="text-[11px] font-bold text-slate-300 bg-[#1e2330] px-2 py-0.5 rounded border border-[#353e52]">
                             {report.countedProducts} Produk Diperiksa
                           </span>
                           <span className="text-[11px] font-bold text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">
@@ -804,7 +804,7 @@ export const StockOpnamePage: React.FC = () => {
                               ? 'text-rose-300 bg-rose-950/60 border border-rose-800/60' 
                               : report.totalDifferenceValue > 0 
                               ? 'text-sky-300 bg-sky-950/60 border border-sky-800/60' 
-                              : 'text-zinc-400 bg-zinc-800 border border-zinc-700'
+                              : 'text-slate-400 bg-[#1e2330] border border-[#353e52]'
                           }`}>
                             Nilai Selisih: {report.totalDifferenceValue < 0 ? '-' : report.totalDifferenceValue > 0 ? '+' : ''}Rp {Math.abs(report.totalDifferenceValue).toLocaleString('id-ID')}
                           </span>
@@ -816,7 +816,7 @@ export const StockOpnamePage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedReportDetail(report)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#222226] hover:bg-zinc-700 text-zinc-200 text-xs font-bold rounded-lg border border-zinc-700 transition"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1e2330] hover:bg-[#2b3242] text-slate-200 text-xs font-bold rounded-lg border border-[#353e52] transition"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Rincian Item</span>
@@ -853,31 +853,31 @@ export const StockOpnamePage: React.FC = () => {
          ======================================================== */}
       {isConfirmModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#18181b] rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-zinc-800 space-y-4 animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div className="bg-[#252a36] rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-[#32384a] space-y-4 animate-scaleUp">
+            <div className="flex items-center justify-between border-b border-[#32384a] pb-3">
               <div className="flex items-center gap-2 text-emerald-400">
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
-                <h3 className="text-base font-black text-zinc-100">
+                <h3 className="text-base font-black text-slate-100">
                   Konfirmasi Penyesuaian Stok
                 </h3>
               </div>
               <button
                 onClick={() => setIsConfirmModalOpen(false)}
-                className="text-zinc-400 hover:text-zinc-200 p-1"
+                className="text-slate-400 hover:text-slate-200 p-1"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Anda akan memperbarui stok database untuk <strong className="text-zinc-200">{stats.diffCount} produk</strong> yang mengalami selisih fisik. Perubahan ini akan otomatis dicatat ke dalam <strong className="text-zinc-200">Audit Log Stok Toko</strong>.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Anda akan memperbarui stok database untuk <strong className="text-slate-200">{stats.diffCount} produk</strong> yang mengalami selisih fisik. Perubahan ini akan otomatis dicatat ke dalam <strong className="text-slate-200">Audit Log Stok Toko</strong>.
             </p>
 
             {/* Quick stats in modal */}
-            <div className="grid grid-cols-3 gap-2 bg-[#121212] p-3 rounded-xl border border-zinc-800 text-center">
+            <div className="grid grid-cols-3 gap-2 bg-[#1e2330] p-3 rounded-xl border border-[#353e52] text-center">
               <div>
-                <span className="text-[10px] text-zinc-500 block font-semibold">Total SKU</span>
-                <span className="text-sm font-black text-zinc-200">{stats.total}</span>
+                <span className="text-[10px] text-slate-400 block font-semibold">Total SKU</span>
+                <span className="text-sm font-black text-slate-200">{stats.total}</span>
               </div>
               <div>
                 <span className="text-[10px] text-rose-400 block font-semibold">Selisih Kurang</span>
@@ -891,7 +891,7 @@ export const StockOpnamePage: React.FC = () => {
 
             {/* Session Notes Input */}
             <div>
-              <label className="text-xs font-bold text-zinc-300 block mb-1">
+              <label className="text-xs font-bold text-slate-300 block mb-1">
                 Catatan Sesi Stok Opname (Opsional):
               </label>
               <textarea
@@ -899,7 +899,7 @@ export const StockOpnamePage: React.FC = () => {
                 onChange={(e) => setSessionNotes(e.target.value)}
                 placeholder="Misal: SO Rutin Akhir Pekan, pemeriksaan rak minyak & beras..."
                 rows={2}
-                className="w-full px-3 py-2 text-xs bg-[#222226] border border-zinc-700 text-zinc-100 rounded-xl focus:border-emerald-500 focus:outline-none placeholder:text-zinc-600"
+                className="w-full px-3 py-2 text-xs bg-[#1e2330] border border-[#353e52] text-slate-100 rounded-xl focus:border-emerald-500 focus:outline-none placeholder:text-slate-500"
               />
             </div>
 
@@ -909,7 +909,7 @@ export const StockOpnamePage: React.FC = () => {
                 type="button"
                 onClick={() => setIsConfirmModalOpen(false)}
                 disabled={isSaving}
-                className="px-4 py-2 bg-[#222226] hover:bg-zinc-700 text-zinc-300 text-xs font-bold rounded-xl border border-zinc-700 transition"
+                className="px-4 py-2 bg-[#1e2330] hover:bg-[#2b3242] text-slate-300 text-xs font-bold rounded-xl border border-[#353e52] transition"
               >
                 Batal
               </button>
@@ -917,7 +917,7 @@ export const StockOpnamePage: React.FC = () => {
                 type="button"
                 onClick={handleSaveStockOpname}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl shadow-md transition disabled:bg-zinc-800 disabled:text-zinc-600"
+                className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl shadow-md transition disabled:bg-[#1e2330] disabled:text-slate-600"
               >
                 {isSaving ? (
                   <span>Menyimpan...</span>
@@ -938,22 +938,22 @@ export const StockOpnamePage: React.FC = () => {
          ======================================================== */}
       {selectedReportDetail && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-[#18181b] rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border border-zinc-800 space-y-4 max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div className="bg-[#252a36] rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border border-[#32384a] space-y-4 max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-[#32384a] pb-3">
               <div>
                 <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase">
                   Rincian Dokumen
                 </span>
-                <h3 className="text-base font-black text-zinc-100">
+                <h3 className="text-base font-black text-slate-100">
                   {selectedReportDetail.opnameNumber}
                 </h3>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-slate-400">
                   {new Date(selectedReportDetail.date || selectedReportDetail.createdAt).toLocaleString('id-ID')} • Kasir: {selectedReportDetail.cashierName}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedReportDetail(null)}
-                className="text-zinc-400 hover:text-zinc-200 p-1"
+                className="text-slate-400 hover:text-slate-200 p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -961,7 +961,7 @@ export const StockOpnamePage: React.FC = () => {
 
             <div className="overflow-y-auto flex-1">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#121212] text-zinc-300 text-[10px] uppercase font-bold sticky top-0 border-b border-zinc-800">
+                <thead className="bg-[#1e222b] text-slate-300 text-[10px] uppercase font-bold sticky top-0 border-b border-[#32384a]">
                   <tr>
                     <th className="px-3 py-2">No</th>
                     <th className="px-3 py-2">Kode</th>
@@ -973,17 +973,17 @@ export const StockOpnamePage: React.FC = () => {
                     <th className="px-3 py-2">Catatan</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/60">
+                <tbody className="divide-y divide-[#32384a]/60">
                   {selectedReportDetail.items.map((item, idx) => {
                     const diff = item.difference;
                     const isLess = diff < 0;
                     const isMore = diff > 0;
                     return (
                       <tr key={idx} className={isLess ? 'bg-rose-950/20' : isMore ? 'bg-sky-950/20' : ''}>
-                        <td className="px-3 py-2 text-zinc-500 font-mono text-[11px]">{idx + 1}</td>
-                        <td className="px-3 py-2 font-mono font-bold text-zinc-300">{item.productCode}</td>
-                        <td className="px-3 py-2 font-bold text-zinc-100">{item.productName}</td>
-                        <td className="px-3 py-2 text-right font-mono text-zinc-300">{item.systemStock} {item.unit}</td>
+                        <td className="px-3 py-2 text-slate-500 font-mono text-[11px]">{idx + 1}</td>
+                        <td className="px-3 py-2 font-mono font-bold text-slate-300">{item.productCode}</td>
+                        <td className="px-3 py-2 font-bold text-slate-100">{item.productName}</td>
+                        <td className="px-3 py-2 text-right font-mono text-slate-300">{item.systemStock} {item.unit}</td>
                         <td className="px-3 py-2 text-right font-mono font-black text-emerald-400">{item.physicalStock} {item.unit}</td>
                         <td className="px-3 py-2 text-right font-mono font-bold">
                           <span className={isLess ? 'text-rose-400' : isMore ? 'text-sky-400' : 'text-emerald-400'}>
@@ -997,7 +997,7 @@ export const StockOpnamePage: React.FC = () => {
                             {item.status}
                           </span>
                         </td>
-                        <td className="px-3 py-2 text-zinc-400 italic">{item.notes || '-'}</td>
+                        <td className="px-3 py-2 text-slate-400 italic">{item.notes || '-'}</td>
                       </tr>
                     );
                   })}
@@ -1005,8 +1005,8 @@ export const StockOpnamePage: React.FC = () => {
               </table>
             </div>
 
-            <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
-              <span className="text-xs text-zinc-400">
+            <div className="flex items-center justify-between border-t border-[#32384a] pt-3">
+              <span className="text-xs text-slate-400">
                 Total {selectedReportDetail.items.length} produk diperiksa
               </span>
               <button
