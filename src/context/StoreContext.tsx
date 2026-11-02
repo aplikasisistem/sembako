@@ -208,7 +208,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       })
     );
 
-    // 2. Real-time Transactions listener
+    // 2. Real-time Transactions listener (limit to recent 200 for fast initial load)
     unsubs.push(
       listenToCollection<Transaction>('transactions', (cloudTxs) => {
         if (cloudTxs) {
@@ -216,7 +216,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           setTransactions(cloudTxs);
           storage.saveTransactions(cloudTxs);
         }
-      })
+      }, 200)
     );
 
     // 3. Real-time Customer Debts listener
@@ -238,7 +238,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           setPettyCash(cloudLogs);
           localStorage.setItem('pandir_petty_cash', JSON.stringify(cloudLogs));
         }
-      })
+      }, 150)
     );
 
     // 5. Real-time Closing Reports listener
@@ -249,7 +249,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           setClosingReports(cloudReports);
           localStorage.setItem('pandir_closing_reports', JSON.stringify(cloudReports));
         }
-      })
+      }, 100)
     );
 
     // 6. Real-time Capital Logs listener
@@ -260,7 +260,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           setCapitalLogs(cloudLogs);
           localStorage.setItem('pandir_capital_logs', JSON.stringify(cloudLogs));
         }
-      })
+      }, 100)
     );
 
     // 7. Real-time Stock Flow Logs listener
@@ -271,7 +271,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           setStockLogs(cloudLogs);
           localStorage.setItem('pandir_stock_logs', JSON.stringify(cloudLogs));
         }
-      })
+      }, 200)
     );
 
     // 8. Real-time Stock Opname Reports listener

@@ -3,22 +3,39 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { StoreProvider } from './context/StoreContext';
 import { Header } from './components/Header';
 import { Navigation, NavTab } from './components/Navigation';
 import { LoginPage } from './pages/LoginPage';
 import { POSPage } from './pages/POSPage';
-import { InventoryPage } from './pages/InventoryPage';
-import { DebtPage } from './pages/DebtPage';
-import { PettyCashPage } from './pages/PettyCashPage';
-import { ClosingPage } from './pages/ClosingPage';
-import { FinancePage } from './pages/FinancePage';
-import { UsersPage } from './pages/UsersPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { StockOpnamePage } from './pages/StockOpnamePage';
-import { TransactionsPage } from './pages/TransactionsPage';
+
+// Code Splitting / Lazy Loading for heavy secondary pages
+const TransactionsPage = lazy(() => import('./pages/TransactionsPage').then((m) => ({ default: m.TransactionsPage })));
+const InventoryPage = lazy(() => import('./pages/InventoryPage').then((m) => ({ default: m.InventoryPage })));
+const StockOpnamePage = lazy(() => import('./pages/StockOpnamePage').then((m) => ({ default: m.StockOpnamePage })));
+const DebtPage = lazy(() => import('./pages/DebtPage').then((m) => ({ default: m.DebtPage })));
+const PettyCashPage = lazy(() => import('./pages/PettyCashPage').then((m) => ({ default: m.PettyCashPage })));
+const ClosingPage = lazy(() => import('./pages/ClosingPage').then((m) => ({ default: m.ClosingPage })));
+const FinancePage = lazy(() => import('./pages/FinancePage').then((m) => ({ default: m.FinancePage })));
+const UsersPage = lazy(() => import('./pages/UsersPage').then((m) => ({ default: m.UsersPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+
+/**
+ * Lightweight Skeleton Loader for lazy-loaded tabs
+ */
+const PageSkeleton: React.FC = () => (
+  <div className="p-4 sm:p-6 space-y-4 animate-pulse font-sans">
+    <div className="h-8 bg-[#252a36] rounded-xl w-48 border border-[#32384a]" />
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="h-24 bg-[#252a36] rounded-2xl border border-[#32384a]" />
+      <div className="h-24 bg-[#252a36] rounded-2xl border border-[#32384a]" />
+      <div className="h-24 bg-[#252a36] rounded-2xl border border-[#32384a]" />
+    </div>
+    <div className="h-64 bg-[#252a36] rounded-2xl border border-[#32384a] w-full" />
+  </div>
+);
 
 const MainLayout: React.FC = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -44,18 +61,20 @@ const MainLayout: React.FC = () => {
         {/* Navigation Sidebar for Desktop & Bottom Bar for Mobile */}
         <Navigation activeTab={currentTab} setActiveTab={setActiveTab} />
 
-        {/* Dynamic Page Views */}
+        {/* Dynamic Page Views with Suspense for instant initial load */}
         <main className="flex-1 w-full">
-          {currentTab === 'pos' && <POSPage />}
-          {currentTab === 'transactions' && <TransactionsPage />}
-          {currentTab === 'inventory' && <InventoryPage />}
-          {currentTab === 'stockOpname' && <StockOpnamePage />}
-          {currentTab === 'debts' && <DebtPage />}
-          {currentTab === 'pettyCash' && <PettyCashPage />}
-          {currentTab === 'closing' && <ClosingPage />}
-          {currentTab === 'finance' && <FinancePage />}
-          {currentTab === 'users' && <UsersPage />}
-          {currentTab === 'settings' && <SettingsPage />}
+          <Suspense fallback={<PageSkeleton />}>
+            {currentTab === 'pos' && <POSPage />}
+            {currentTab === 'transactions' && <TransactionsPage />}
+            {currentTab === 'inventory' && <InventoryPage />}
+            {currentTab === 'stockOpname' && <StockOpnamePage />}
+            {currentTab === 'debts' && <DebtPage />}
+            {currentTab === 'pettyCash' && <PettyCashPage />}
+            {currentTab === 'closing' && <ClosingPage />}
+            {currentTab === 'finance' && <FinancePage />}
+            {currentTab === 'users' && <UsersPage />}
+            {currentTab === 'settings' && <SettingsPage />}
+          </Suspense>
         </main>
       </div>
     </div>

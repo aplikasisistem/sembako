@@ -11,6 +11,7 @@ import {
   getDocs,
   query,
   where,
+  limit,
   deleteDoc, 
   writeBatch,
   onSnapshot, 
@@ -172,14 +173,16 @@ export function listenToDocument<T>(
  */
 export function listenToCollection<T extends { id: string }>(
   collectionName: string,
-  callback: (data: T[]) => void
+  callback: (data: T[]) => void,
+  maxLimit?: number
 ): Unsubscribe {
   const { isConfigured, db } = initFirebaseService();
   if (isConfigured && db) {
     try {
       const colRef = collection(db, collectionName);
+      const q = maxLimit ? query(colRef, limit(maxLimit)) : colRef;
       return onSnapshot(
-        colRef,
+        q,
         (snapshot) => {
           const items: T[] = [];
           snapshot.forEach((docSnap) => {
