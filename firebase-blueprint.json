@@ -105,6 +105,17 @@
         "targetWhatsApp": { "type": "string" }
       },
       "required": ["storeName"]
+    },
+    "ActiveCart": {
+      "title": "Active Cart",
+      "description": "Active shopping cart session data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "items": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "items"]
     }
   },
   "firestore": {
@@ -135,6 +146,10 @@
     "settings/{settingId}": {
       "schema": "SystemSettings",
       "description": "Global settings"
+    },
+    "active_carts/{cartId}": {
+      "schema": "ActiveCart",
+      "description": "Active POS shopping cart session"
     }
   }
 }

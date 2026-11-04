@@ -21,8 +21,10 @@ import {
   getActiveFirebaseConfig, 
   clearAllFirestoreCollections,
   listenToCollection,
+  listenToDocument,
   initFirebaseService,
-  syncDocToFirestore
+  syncDocToFirestore,
+  deleteDocFromFirestore
 } from '../services/firebase';
 import { sound } from '../services/audio';
 import { Unsubscribe } from 'firebase/firestore';
@@ -320,10 +322,44 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       })
     );
 
+    // 11. Real-time Active Cart listener
+    unsubs.push(
+      listenToDocument<{ id: string; items?: CartItem[] }>('active_carts', 'default_pos_cart', (cloudCart) => {
+        if (cloudCart && Array.isArray(cloudCart.items)) {
+          const cloudItems = cloudCart.items;
+          setCart((prevCart) => {
+            if (JSON.stringify(prevCart) === JSON.stringify(cloudItems)) {
+              return prevCart;
+            }
+            return cloudItems;
+          });
+        }
+      })
+    );
+
     return () => {
       unsubs.forEach((unsub) => unsub && unsub());
     };
   }, [isFirebaseActive]);
+
+  // Helper to persist active cart changes directly to Firestore in real time
+  const saveCartToFirestore = useCallback((newCart: CartItem[]) => {
+    if (newCart.length === 0) {
+      deleteDocFromFirestore('active_carts', 'default_pos_cart').catch(() => {
+        syncDocToFirestore('active_carts', 'default_pos_cart', {
+          id: 'default_pos_cart',
+          items: [],
+          updatedAt: new Date().toISOString(),
+        });
+      });
+    } else {
+      syncDocToFirestore('active_carts', 'default_pos_cart', {
+        id: 'default_pos_cart',
+        items: newCart,
+        updatedAt: new Date().toISOString(),
+      }).catch((err) => console.warn('[Cart Firestore Sync Error]', err));
+    }
+  }, []);
 
   // --- CART CALCULATIONS ---
   const cartTotalAmount = cart.reduce((acc, item) => acc + item.subtotal, 0);
@@ -356,6 +392,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       };
     }
 
+    let updatedCartList: CartItem[] = [];
+
     setCart((prev) => {
       const existingIndex = prev.findIndex((i) => {
         if (variantId && i.variantId) {
@@ -370,12 +408,16 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         const existing = updatedCart[existingIndex];
         const newQty = existing.quantity + quantity;
         updatedCart[existingIndex] = storage.buildCartItem(product, unitToUse, newQty, existing.discount, variantId);
+        updatedCartList = updatedCart;
         return updatedCart;
       } else {
         const newItem = storage.buildCartItem(product, unitToUse, quantity, 0, variantId);
-        return [...prev, newItem];
+        updatedCartList = [...prev, newItem];
+        return updatedCartList;
       }
     });
+
+    saveCartToFirestore(updatedCartList);
 
     sound.playVoiceChime();
     return { success: true };
@@ -415,8 +457,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       };
     }
 
-    setCart((prev) =>
-      prev.map((item) => {
+    let updatedCartList: CartItem[] = [];
+
+    setCart((prev) => {
+      const nextCart = prev.map((item) => {
         const match = variantId && item.variantId
           ? (item.productId === productId && item.variantId === variantId)
           : (item.productId === productId && item.selectedUnit === selectedUnit);
@@ -425,8 +469,12 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           return storage.buildCartItem(product, selectedUnit, quantity, item.discount, variantId);
         }
         return item;
-      })
-    );
+      });
+      updatedCartList = nextCart;
+      return nextCart;
+    });
+
+    saveCartToFirestore(updatedCartList);
     return { success: true };
   };
 
@@ -439,8 +487,10 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const product = products.find((p) => p.id === productId);
     if (!product) return;
 
-    setCart((prev) =>
-      prev.map((item) => {
+    let updatedCartList: CartItem[] = [];
+
+    setCart((prev) => {
+      const nextCart = prev.map((item) => {
         const match = variantId && item.variantId
           ? (item.productId === productId && item.variantId === variantId)
           : (item.productId === productId && item.selectedUnit === selectedUnit);
@@ -449,21 +499,34 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           return storage.buildCartItem(product, selectedUnit, item.quantity, Math.max(0, discount), variantId);
         }
         return item;
-      })
-    );
+      });
+      updatedCartList = nextCart;
+      return nextCart;
+    });
+
+    saveCartToFirestore(updatedCartList);
   };
 
   const removeFromCart = (productId: string, selectedUnit: string, variantId?: string) => {
-    setCart((prev) =>
-      prev.filter((item) => {
+    let updatedCartList: CartItem[] = [];
+
+    setCart((prev) => {
+      const nextCart = prev.filter((item) => {
         if (item.productId !== productId) return true;
         if (variantId && item.variantId) return item.variantId !== variantId;
         return item.selectedUnit !== selectedUnit;
-      })
-    );
+      });
+      updatedCartList = nextCart;
+      return nextCart;
+    });
+
+    saveCartToFirestore(updatedCartList);
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    saveCartToFirestore([]);
+  };
 
   // --- CHECKOUT PROCESS ---
   const checkout = async (data: CheckoutData): Promise<{ success: boolean; transaction?: Transaction; error?: string }> => {

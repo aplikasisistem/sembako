@@ -96,5 +96,10 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if isSignedIn();
     }
+
+    // Active Carts: Read and write active shopping cart session for real-time POS persistence.
+    match /active_carts/{cartId} {
+      allow read, write: if true;
+    }
   }
 }
