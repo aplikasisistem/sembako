@@ -772,14 +772,14 @@ export const POSPage: React.FC = () => {
         <div className="lg:col-span-7 xl:col-span-8 space-y-3 sm:space-y-4">
           
           {/* Top Control Bar with Search & Action Buttons */}
-          <div className="bg-[#252a36] p-2 sm:p-2.5 rounded-xl border border-[#32384a] shadow-xs flex items-center gap-2">
+          <div className="bg-white/90 backdrop-blur-xl p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-sm shadow-slate-200/50 flex items-center gap-2">
             
             {/* Search Input with Auto-Focus and Multiplier Support */}
             <div className="relative flex-1 min-w-0">
               {isListeningVoice ? (
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1 text-red-400 animate-pulse">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span>
-                  <Mic className="w-3.5 h-3.5 text-red-400" />
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1 text-red-600 animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>
+                  <Mic className="w-3.5 h-3.5 text-red-600" />
                 </div>
               ) : (
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -798,10 +798,10 @@ export const POSPage: React.FC = () => {
                 onKeyDown={handleSearchKeyDown}
                 className={`w-full ${
                   isListeningVoice ? 'pl-9' : 'pl-8'
-                } pr-10 py-1.5 bg-[#1e2330] border rounded-lg text-xs sm:text-sm font-medium text-slate-100 placeholder:text-slate-500 focus:outline-none transition ${
+                } pr-10 py-1.5 bg-slate-50 border rounded-xl text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition ${
                   isListeningVoice
-                    ? 'border-red-500 ring-2 ring-red-500/50 shadow-xs'
-                    : 'border-[#353e52] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
+                    ? 'border-red-500 ring-2 ring-red-500/20 shadow-xs'
+                    : 'border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20'
                 }`}
               />
 
@@ -815,13 +815,13 @@ export const POSPage: React.FC = () => {
                       setInterimTranscript('');
                       if (searchBarRef.current) searchBarRef.current.focus();
                     }}
-                    className="p-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-[#252a36] transition"
+                    className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200/80 transition"
                     title="Hapus pencarian (Esc)"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 )}
-                <span className="text-[9px] font-mono bg-[#161922] text-slate-400 px-1 py-0.5 rounded border border-[#32384a] hidden md:inline">
+                <span className="text-[9px] font-mono bg-slate-200/80 text-slate-600 px-1 py-0.5 rounded border border-slate-300 hidden md:inline font-bold">
                   F2
                 </span>
               </div>
@@ -832,24 +832,24 @@ export const POSPage: React.FC = () => {
               {/* Camera Barcode Scanner Button */}
               <button
                 onClick={() => setIsScannerOpen(true)}
-                className="flex items-center gap-1 px-2.5 py-1.5 bg-[#1e2330] hover:bg-[#2d3444] text-slate-200 border border-[#32384a] rounded-lg text-[11px] font-bold transition active:scale-95"
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl text-[11px] font-extrabold transition active:scale-95 cursor-pointer"
                 title="Buka Kamera Barcode Scanner"
               >
-                <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                <Camera className="w-3.5 h-3.5 text-emerald-600" />
                 <span className="hidden sm:inline">Scan</span>
               </button>
 
               {/* Voice Search Toolbar Button */}
               <button
                 onClick={toggleVoiceRecognition}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition active:scale-95 ${
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-extrabold transition active:scale-95 cursor-pointer ${
                   isListeningVoice
                     ? 'bg-red-600 text-white animate-pulse shadow-md ring-2 ring-red-400/50'
-                    : 'bg-[#1e2330] hover:bg-[#2d3444] text-slate-200 border border-[#32384a]'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
                 }`}
                 title="Cari Produk dengan Suara (F7)"
               >
-                {isListeningVoice ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-emerald-400" />}
+                {isListeningVoice ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-emerald-600" />}
                 <span className="hidden sm:inline">{isListeningVoice ? 'Stop' : 'Suara'}</span>
               </button>
 
@@ -918,49 +918,49 @@ export const POSPage: React.FC = () => {
           )}
 
           {/* Quick Keyboard Shortcut Bar Info - Responsive Horizontal Scrollable Container */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[10px] text-slate-300 font-medium">
-            <div className="flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-lg bg-[#252a36] border border-[#32384a]">
-              <Command className="w-3 h-3 text-emerald-400 shrink-0" />
-              <span className="font-bold text-slate-200">Pintasan:</span>
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[10px] text-slate-600 font-medium">
+            <div className="flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <Command className="w-3 h-3 text-emerald-600 shrink-0" />
+              <span className="font-extrabold text-slate-800">Pintasan:</span>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="px-2 py-1 rounded-lg bg-[#252a36] border border-[#32384a] text-slate-300 flex items-center gap-1 shrink-0">
-                <kbd className="font-mono bg-[#161922] px-1 py-0.2 rounded text-[9px] text-emerald-400 border border-[#32384a]">3*Minyak</kbd> Kali Barang
+              <span className="px-2 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1 shrink-0 shadow-2xs font-semibold">
+                <kbd className="font-mono bg-slate-100 px-1 py-0.2 rounded text-[9px] text-emerald-700 border border-slate-300 font-bold">3*Minyak</kbd> Kali Barang
               </span>
-              <span className="px-2 py-1 rounded-lg bg-[#252a36] border border-[#32384a] text-slate-300 flex items-center gap-1 shrink-0">
-                <kbd className="font-mono bg-[#161922] px-1 py-0.2 rounded text-[9px] text-emerald-400 border border-[#32384a]">F2</kbd> Cari
+              <span className="px-2 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1 shrink-0 shadow-2xs font-semibold">
+                <kbd className="font-mono bg-slate-100 px-1 py-0.2 rounded text-[9px] text-emerald-700 border border-slate-300 font-bold">F2</kbd> Cari
               </span>
-              <span className="px-2 py-1 rounded-lg bg-[#252a36] border border-[#32384a] text-slate-300 flex items-center gap-1 shrink-0">
-                <kbd className="font-mono bg-[#161922] px-1 py-0.2 rounded text-[9px] text-emerald-400 border border-[#32384a]">F7</kbd> Suara
+              <span className="px-2 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1 shrink-0 shadow-2xs font-semibold">
+                <kbd className="font-mono bg-slate-100 px-1 py-0.2 rounded text-[9px] text-emerald-700 border border-slate-300 font-bold">F7</kbd> Suara
               </span>
-              <span className="px-2 py-1 rounded-lg bg-[#252a36] border border-[#32384a] text-slate-300 flex items-center gap-1 shrink-0">
-                <kbd className="font-mono bg-[#161922] px-1 py-0.2 rounded text-[9px] text-emerald-400 border border-[#32384a]">F4</kbd> Quick
+              <span className="px-2 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1 shrink-0 shadow-2xs font-semibold">
+                <kbd className="font-mono bg-slate-100 px-1 py-0.2 rounded text-[9px] text-emerald-700 border border-slate-300 font-bold">F4</kbd> Quick
               </span>
-              <span className="px-2 py-1 rounded-lg bg-[#252a36] border border-[#32384a] text-slate-300 flex items-center gap-1 shrink-0">
-                <kbd className="font-mono bg-[#161922] px-1 py-0.2 rounded text-[9px] text-emerald-400 border border-[#32384a]">F9</kbd> Bayar
+              <span className="px-2 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1 shrink-0 shadow-2xs font-semibold">
+                <kbd className="font-mono bg-slate-100 px-1 py-0.2 rounded text-[9px] text-emerald-700 border border-slate-300 font-bold">F9</kbd> Bayar
               </span>
             </div>
           </div>
 
           {/* DYNAMIC QUICK ADD GRID: TOP SELLING ITEMS */}
           {showQuickAdd && (
-            <div className="bg-[#252a36] border border-amber-900/50 rounded-2xl p-3 shadow-xs transition-all animate-in fade-in-50 duration-200">
-              <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-[#32384a]">
+            <div className="bg-white border border-amber-300 rounded-2xl p-3 shadow-md shadow-amber-100/50 transition-all animate-in fade-in-50 duration-200">
+              <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-200">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center shadow-xs">
+                  <div className="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center shadow-xs">
                     <Zap className="w-3.5 h-3.5 fill-white" />
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <h3 className="text-xs font-black text-slate-100 uppercase tracking-wide">
+                      <h3 className="text-xs font-black text-slate-900 uppercase tracking-wide">
                         Quick Add — Item Paling Laris
                       </h3>
-                      <span className="text-[9px] font-extrabold text-amber-300 bg-amber-950/80 border border-amber-800/60 px-1.5 py-0.5 rounded flex items-center gap-1">
-                        <Flame className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
+                      <span className="text-[9px] font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded flex items-center gap-1">
+                        <Flame className="w-2.5 h-2.5 text-amber-600 fill-amber-600" />
                         1-Klik Masuk Keranjang
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-medium">
+                    <p className="text-[10px] text-slate-500 font-medium">
                       Otomatis diranking berdasarkan riwayat penjualan riil kasir
                     </p>
                   </div>
@@ -970,7 +970,7 @@ export const POSPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowQuickAdd(false)}
-                    className="text-[11px] font-bold text-slate-400 hover:text-slate-200 px-2 py-0.5 hover:bg-[#1e2330] rounded-lg transition"
+                    className="text-[11px] font-bold text-slate-500 hover:text-slate-800 px-2 py-0.5 hover:bg-slate-100 rounded-lg transition cursor-pointer"
                     title="Tutup panel Quick Add (F4)"
                   >
                     Tutup
@@ -998,8 +998,8 @@ export const POSPage: React.FC = () => {
                       }}
                       className={`text-left p-2.5 rounded-xl border transition flex flex-col justify-between group relative select-none cursor-pointer ${
                         isOutOfStock
-                          ? 'bg-[#1e2330]/60 border-[#32384a] opacity-50 cursor-not-allowed'
-                          : 'bg-[#1e2330] hover:bg-[#202738] hover:border-amber-500/60 border-[#32384a] shadow-xs active:scale-97'
+                          ? 'bg-slate-100/60 border-slate-200 opacity-50 cursor-not-allowed'
+                          : 'bg-slate-50/80 hover:bg-white hover:border-amber-500 border-slate-200/90 shadow-2xs hover:shadow-md active:scale-97'
                       }`}
                       title={isOutOfStock ? `${product.name} (Stok Habis)` : `Klik untuk tambah 1 ${displayUnit} ${product.name}`}
                     >
@@ -1011,19 +1011,19 @@ export const POSPage: React.FC = () => {
                             : rank === 2
                             ? 'bg-amber-500 text-white'
                             : rank === 3
-                            ? 'bg-orange-400 text-white'
-                            : 'bg-[#252a36] text-slate-300 border border-[#32384a]'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-slate-200 text-slate-700 border border-slate-300'
                         }`}>
                           <Flame className="w-2.5 h-2.5 fill-current" />
                           #{rank}
                         </span>
 
                         {totalSold > 0 ? (
-                          <span className="text-[9px] font-extrabold text-amber-300 bg-amber-950/60 border border-amber-800/40 px-1.5 py-0.5 rounded truncate">
+                          <span className="text-[9px] font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded truncate">
                             {totalSold} {product.baseUnit} terjual
                           </span>
                         ) : (
-                          <span className="text-[9px] font-semibold text-slate-400">
+                          <span className="text-[9px] font-semibold text-slate-500">
                             Stok {product.stock}
                           </span>
                         )}
@@ -1031,21 +1031,21 @@ export const POSPage: React.FC = () => {
 
                       {/* Product Name & Category */}
                       <div className="min-h-[2rem]">
-                        <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-300 leading-snug line-clamp-2">
+                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-amber-700 leading-snug line-clamp-2">
                           {product.name}
                         </h4>
-                        <span className="text-[10px] text-slate-400 block truncate">
+                        <span className="text-[10px] text-slate-500 block truncate">
                           {product.category}
                         </span>
                       </div>
 
                       {/* Price & Single-click Quick Button */}
-                      <div className="mt-2 pt-1.5 border-t border-[#32384a] flex items-center justify-between w-full">
+                      <div className="mt-2 pt-1.5 border-t border-slate-200 flex items-center justify-between w-full">
                         <div>
-                          <span className="text-xs font-black text-emerald-400">
+                          <span className="text-xs font-black text-emerald-700">
                             Rp {displayPrice.toLocaleString('id-ID')}
                           </span>
-                          <span className="text-[9px] text-slate-400 block font-medium">
+                          <span className="text-[9px] text-slate-500 block font-medium">
                             /{displayUnit}
                           </span>
                         </div>
@@ -1054,10 +1054,10 @@ export const POSPage: React.FC = () => {
                           type="button"
                           disabled={isOutOfStock}
                           onClick={(e) => handleQuickAdd(product, e)}
-                          className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center gap-1 transition ${
+                          className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center gap-1 transition cursor-pointer ${
                             isOutOfStock
-                              ? 'bg-[#252a36] text-slate-500 cursor-not-allowed'
-                              : 'bg-amber-600 text-white hover:bg-amber-500 shadow-xs active:scale-95'
+                              ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                              : 'bg-amber-500 text-white hover:bg-amber-600 shadow-xs active:scale-95'
                           }`}
                         >
                           <span>1-Klik</span>
@@ -1074,10 +1074,10 @@ export const POSPage: React.FC = () => {
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pt-0.5 scroll-smooth touch-pan-x">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition shrink-0 cursor-pointer ${
                 selectedCategory === 'all'
                   ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-[#252a36] border border-[#32384a] text-slate-300 hover:bg-[#2d3444] hover:text-white'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900 shadow-2xs'
               }`}
             >
               Semua Sembako ({products.length})
@@ -1086,10 +1086,10 @@ export const POSPage: React.FC = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition shrink-0 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition shrink-0 cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-[#252a36] border border-[#32384a] text-slate-300 hover:bg-[#2d3444] hover:text-white'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900 shadow-2xs'
                 }`}
               >
                 {cat}
@@ -1159,32 +1159,32 @@ export const POSPage: React.FC = () => {
                       handleAddToCart(product, unitToAdd, qtyToAdd, matchedUnitConfig.variantId);
                     }
                   }}
-                  className={`bg-[#252a36] rounded-xl border flex flex-col justify-between h-full shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden select-none cursor-pointer group ${
-                    isHighlighted ? 'ring-2 ring-emerald-500 border-emerald-500 shadow-md bg-emerald-500/10' : ''
+                  className={`rounded-2xl border flex flex-col justify-between h-full shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden select-none cursor-pointer group ${
+                    isHighlighted ? 'ring-2 ring-emerald-500 border-emerald-500 shadow-md bg-emerald-50' : ''
                   } ${
                     isOutOfStock
-                      ? 'border-red-900/50 bg-[#1e2330]/60 opacity-60'
+                      ? 'border-red-200 bg-slate-50/60 opacity-60'
                       : isLowStock
-                      ? 'border-amber-800/60 bg-[#252a36]'
-                      : 'border-[#32384a] hover:border-emerald-500/50'
+                      ? 'border-amber-200 bg-amber-50/30'
+                      : 'bg-white/95 backdrop-blur-md border-slate-200/90 hover:border-emerald-500/60'
                   }`}
                 >
                   <div className="p-2.5 sm:p-3">
                     {/* Compact Top Info */}
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="text-[9px] font-mono font-bold text-slate-400 bg-[#161922] border border-[#32384a] px-1.5 py-0.5 rounded truncate">
+                      <span className="text-[9px] font-mono font-bold text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded truncate">
                         {product.code}
                       </span>
                       {isOutOfStock ? (
-                        <span className="text-[9px] font-bold text-red-400 bg-red-950/60 px-1.5 py-0.5 rounded-full border border-red-800/60 shrink-0">
+                        <span className="text-[9px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded-full border border-rose-200 shrink-0">
                           Habis
                         </span>
                       ) : (
                         <span 
-                          className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border shrink-0 ${
+                          className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-full border shrink-0 ${
                             isLowStock 
-                              ? 'text-amber-300 bg-amber-950/60 border-amber-800/60' 
-                              : 'text-emerald-300 bg-emerald-950/60 border-emerald-800/60'
+                              ? 'text-amber-800 bg-amber-50 border-amber-200' 
+                              : 'text-emerald-800 bg-emerald-50 border-emerald-200'
                           }`}
                         >
                           {availableStockInActiveUnit.toLocaleString('id-ID')} {displayUnitClean}
@@ -1194,13 +1194,13 @@ export const POSPage: React.FC = () => {
 
                     {/* Product Identity */}
                     <div className="mb-1.5">
-                      <h4 className="text-xs sm:text-[13px] font-bold text-slate-100 leading-snug line-clamp-2 min-h-[2rem] group-hover:text-emerald-300 transition-colors">
+                      <h4 className="text-xs sm:text-[13px] font-extrabold text-slate-900 leading-snug line-clamp-2 min-h-[2rem] group-hover:text-emerald-700 transition-colors">
                         {product.name}
                       </h4>
-                      <div className="flex items-center justify-between mt-0.5 text-[10px] text-slate-400 font-medium">
+                      <div className="flex items-center justify-between mt-0.5 text-[10px] text-slate-500 font-medium">
                         <span className="truncate">{product.category}</span>
                         {product.isWeighable && (
-                          <span className="text-[9px] text-emerald-300 bg-emerald-950/60 font-bold px-1 py-0.2 rounded border border-emerald-800/60">
+                          <span className="text-[9px] text-emerald-800 bg-emerald-50 font-bold px-1 py-0.2 rounded border border-emerald-200">
                             Timbangan
                           </span>
                         )}
@@ -1210,7 +1210,7 @@ export const POSPage: React.FC = () => {
                     {/* Unit Pills / Selection */}
                     {hasMultipleVariants ? (
                       <div className="mb-2 space-y-1">
-                        <div className="flex flex-wrap gap-1 p-1 bg-[#1e2330] rounded-lg border border-[#32384a]">
+                        <div className="flex flex-wrap gap-1 p-1 bg-slate-100/90 rounded-xl border border-slate-200">
                           {availableUnits.slice(0, 4).map((u, uIdx) => {
                             const isSelected = 
                               activeUnit === (u.variantId || u.unit) ||
@@ -1227,10 +1227,10 @@ export const POSPage: React.FC = () => {
                                     [product.id]: u.variantId || u.unit,
                                   }));
                                 }}
-                                className={`py-1 px-1.5 rounded-md text-[9px] font-bold transition text-center truncate flex-1 min-w-[30%] ${
+                                className={`py-1 px-1.5 rounded-md text-[9px] font-bold transition text-center truncate flex-1 min-w-[30%] cursor-pointer ${
                                   isSelected
-                                    ? 'bg-amber-600 text-white shadow-xs'
-                                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#252a36]'
+                                    ? 'bg-amber-500 text-white shadow-2xs'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/80'
                                 }`}
                               >
                                 {pillLabel}
@@ -1238,7 +1238,7 @@ export const POSPage: React.FC = () => {
                             );
                           })}
                           {availableUnits.length > 4 && (
-                            <span className="text-[9px] font-bold text-slate-400 px-1 py-1">+ {availableUnits.length - 4}</span>
+                            <span className="text-[9px] font-bold text-slate-500 px-1 py-1">+ {availableUnits.length - 4}</span>
                           )}
                         </div>
                       </div>
@@ -1248,7 +1248,7 @@ export const POSPage: React.FC = () => {
 
                     {/* Weight Input Integration */}
                     {isCustomInput && (
-                      <div className="mb-2 bg-[#1e2330] p-1.5 rounded-lg border border-[#32384a] flex items-center gap-2">
+                      <div className="mb-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 flex items-center gap-2">
                         <input
                           type="number"
                           step={product.baseUnit === 'kg' ? '0.05' : '0.1'}
@@ -1259,9 +1259,9 @@ export const POSPage: React.FC = () => {
                             const val = parseFloat(e.target.value) || 0;
                             setCustomQuantities((prev) => ({ ...prev, [product.id]: val }));
                           }}
-                          className="w-full bg-[#161922] border border-[#32384a] rounded-md px-2 py-0.5 text-[11px] font-bold text-center text-slate-100 focus:border-emerald-500 outline-none"
+                          className="w-full bg-white border border-slate-300 rounded-md px-2 py-0.5 text-[11px] font-bold text-center text-slate-900 focus:border-emerald-600 outline-none"
                         />
-                        <span className="font-bold text-slate-400 text-[10px] uppercase shrink-0">{product.baseUnit}</span>
+                        <span className="font-bold text-slate-500 text-[10px] uppercase shrink-0">{product.baseUnit}</span>
                       </div>
                     )}
                   </div>
@@ -1271,16 +1271,16 @@ export const POSPage: React.FC = () => {
                     <div className="flex items-end justify-between gap-2 mb-2">
                       <div className="min-w-0">
                         <div className="flex items-baseline gap-1">
-                          <span className="text-sm sm:text-[15px] font-black text-emerald-400 leading-none">
+                          <span className="text-sm sm:text-[15px] font-black text-emerald-700 leading-none">
                             Rp {matchedUnitConfig.price.toLocaleString('id-ID')}
                           </span>
-                          <span className="text-[9px] text-slate-400 font-medium truncate">
+                          <span className="text-[9px] text-slate-500 font-medium truncate">
                             /{displayUnitClean}
                           </span>
                         </div>
                       </div>
                       {hasMultipleVariants && (
-                        <span className="text-[9px] text-amber-300 font-bold px-1 rounded bg-amber-950/60 border border-amber-800/60 shrink-0">
+                        <span className="text-[9px] text-amber-800 font-bold px-1 rounded bg-amber-50 border border-amber-200 shrink-0">
                           {availableUnits.length} Satuan
                         </span>
                       )}
@@ -1300,11 +1300,11 @@ export const POSPage: React.FC = () => {
                           handleAddToCart(product, unitToAdd, qtyToAdd, matchedUnitConfig.variantId);
                         }
                       }}
-                      className={`w-full py-1.5 rounded-lg text-[11px] font-bold transition-all active:scale-95 shadow-xs flex items-center justify-center ${
+                      className={`w-full py-1.5 rounded-lg text-[11px] font-bold transition-all active:scale-95 shadow-xs flex items-center justify-center cursor-pointer ${
                         isOutOfStock
-                          ? 'bg-[#1e2330] text-slate-500 cursor-not-allowed shadow-none'
+                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
                           : hasMultipleVariants
-                          ? 'bg-amber-600 hover:bg-amber-500 text-white font-black'
+                          ? 'bg-amber-500 hover:bg-amber-600 text-white font-black'
                           : 'bg-emerald-600 hover:bg-emerald-500 text-white font-black'
                       }`}
                     >
@@ -1317,7 +1317,7 @@ export const POSPage: React.FC = () => {
           </div>
 
           {filteredProducts.length === 0 && (
-            <div className="bg-[#252a36] p-8 rounded-2xl text-center border border-[#32384a]">
+            <div className="bg-white p-8 rounded-2xl text-center border border-slate-200 shadow-sm">
               <ShoppingBag className="w-10 h-10 text-slate-500 mx-auto mb-2" />
               <h4 className="font-bold text-slate-200 text-sm">Barang tidak ditemukan</h4>
               <p className="text-xs text-slate-400 mt-1">
@@ -1331,30 +1331,30 @@ export const POSPage: React.FC = () => {
         <div className="lg:col-span-5 xl:col-span-4 self-start sticky top-3.5">
           <div 
             ref={cartContainerRef}
-            className="bg-[#252a36] rounded-2xl border border-[#32384a] shadow-lg p-3.5 sm:p-4 sticky top-3.5 flex flex-col h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] overscroll-contain transition-all duration-200 z-10"
+            className="bg-white/90 backdrop-blur-2xl rounded-2xl border border-slate-200/90 shadow-lg shadow-slate-200/50 p-3.5 sm:p-4 sticky top-3.5 flex flex-col h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] overscroll-contain transition-all duration-200 z-10"
           >
             
             {/* Cart Header */}
-            <div className="flex items-center justify-between pb-2.5 border-b border-[#32384a]">
+            <div className="flex items-center justify-between pb-2.5 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-950/60 text-emerald-400 flex items-center justify-center font-bold border border-emerald-800/60">
-                    <ShoppingBag className="w-4 h-4 text-emerald-400" />
+                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold border border-emerald-300">
+                    <ShoppingBag className="w-4 h-4 text-emerald-700" />
                   </div>
                   {cartTotalItemsCount > 0 && (
-                    <span className="absolute -top-1 -right-1.5 bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full ring-2 ring-[#252a36]">
+                    <span className="absolute -top-1 -right-1.5 bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full ring-2 ring-white">
                       {cartTotalItemsCount}
                     </span>
                   )}
                 </div>
                 <div>
-                  <h3 className="font-black text-slate-100 text-xs sm:text-sm leading-tight">Keranjang Belanja</h3>
+                  <h3 className="font-black text-slate-900 text-xs sm:text-sm leading-tight">Keranjang Belanja</h3>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] text-emerald-400 font-extrabold flex items-center gap-1 uppercase tracking-tighter">
-                      <span className="w-1 h-1 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span className="text-[9px] text-emerald-700 font-extrabold flex items-center gap-1 uppercase tracking-tighter">
+                      <span className="w-1 h-1 rounded-full bg-emerald-600 animate-ping"></span>
                       Sticky POS
                     </span>
-                    <span className="text-[9px] text-slate-400 font-bold">&bull; F9 Bayar</span>
+                    <span className="text-[9px] text-slate-500 font-bold">&bull; F9 Bayar</span>
                   </div>
                 </div>
               </div>
@@ -1363,7 +1363,7 @@ export const POSPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={clearCart}
-                  className="text-[10px] text-rose-400 hover:text-rose-300 font-black flex items-center gap-1 px-2 py-1 hover:bg-[#1e2330] rounded-lg transition uppercase"
+                  className="text-[10px] text-rose-600 hover:text-rose-700 font-black flex items-center gap-1 px-2 py-1 hover:bg-rose-50 rounded-lg transition uppercase cursor-pointer"
                   title="Kosongkan Keranjang (F12)"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -1389,14 +1389,14 @@ export const POSPage: React.FC = () => {
                     key={`${item.productId}-${item.selectedUnit}-${idx}`}
                     className={`p-2.5 rounded-xl border text-xs space-y-2 transition-all duration-300 ${
                       isJustAdded
-                        ? 'border-emerald-500 bg-emerald-950/30 shadow-sm ring-1 ring-emerald-500/50'
-                        : 'bg-[#1e2330] hover:bg-[#202738] border-[#32384a]'
+                        ? 'border-emerald-500 bg-emerald-50 shadow-xs ring-1 ring-emerald-500/30'
+                        : 'bg-slate-50/80 hover:bg-white border-slate-200'
                     }`}
                   >
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <div className="font-bold text-slate-100 line-clamp-1">
+                          <div className="font-extrabold text-slate-900 line-clamp-1">
                             {formatCartItemTitle(item, parentProd)}
                           </div>
                           {isJustAdded && (
@@ -1405,14 +1405,14 @@ export const POSPage: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
-                          <span className="font-semibold text-emerald-400">Rp {item.unitPrice.toLocaleString('id-ID')} / {item.selectedUnit}</span>
+                        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-600 mt-0.5">
+                          <span className="font-semibold text-emerald-700">Rp {item.unitPrice.toLocaleString('id-ID')} / {item.selectedUnit}</span>
                           {isItemWeighted ? (
-                            <span className="text-[10px] bg-emerald-950/60 text-emerald-300 px-1.5 py-0.2 rounded font-bold border border-emerald-800/60">
+                            <span className="text-[10px] bg-emerald-50 text-emerald-800 px-1.5 py-0.2 rounded font-bold border border-emerald-200">
                               Potong {item.baseQuantity} kg Stok Master
                             </span>
                           ) : item.unitMultiplier > 1 ? (
-                            <span className="text-[10px] bg-amber-950/60 text-amber-300 px-1.5 py-0.2 rounded font-bold border border-amber-800/60">
+                            <span className="text-[10px] bg-amber-50 text-amber-800 px-1.5 py-0.2 rounded font-bold border border-amber-200">
                               Potong {item.baseQuantity} Pcs ({item.quantity} × {item.unitMultiplier} Pcs)
                             </span>
                           ) : null}
@@ -1420,7 +1420,7 @@ export const POSPage: React.FC = () => {
                       </div>
                       <button
                         onClick={() => removeFromCart(item.productId, item.selectedUnit, item.variantId)}
-                        className="text-slate-400 hover:text-rose-400 p-1 transition shrink-0"
+                        className="text-slate-400 hover:text-rose-600 p-1 transition shrink-0 cursor-pointer"
                         title="Hapus barang (Backspace)"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -1429,12 +1429,12 @@ export const POSPage: React.FC = () => {
 
                     {/* Selling Weight Package Selector In Cart: [ 1 KG | 500g | 250g | 100g | Custom ] */}
                     {isItemWeighted && (
-                      <div className="pt-1.5 border-t border-[#32384a]">
-                        <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold mb-1">
+                      <div className="pt-1.5 border-t border-slate-200">
+                        <div className="flex items-center justify-between text-[10px] text-slate-500 font-bold mb-1">
                           <span>Ubah Paket Berat:</span>
-                          <span className="text-emerald-400 font-black">{item.selectedUnit}</span>
+                          <span className="text-emerald-700 font-black">{item.selectedUnit}</span>
                         </div>
-                        <div className="grid grid-cols-5 gap-1 p-0.5 bg-[#161922] rounded-lg border border-[#32384a]">
+                        <div className="grid grid-cols-5 gap-1 p-0.5 bg-slate-100 rounded-lg border border-slate-200">
                           {['1 KG', '500g', '250g', '100g', 'Custom'].map((pkg) => {
                             const isSelected = 
                               (item.selectedUnit.toLowerCase() === pkg.toLowerCase()) || 
@@ -1444,10 +1444,10 @@ export const POSPage: React.FC = () => {
                                 key={`${item.productId}-${pkg}`}
                                 type="button"
                                 onClick={() => handleChangeCartItemPackage(item, pkg)}
-                                className={`py-0.5 px-0.5 rounded text-[10px] font-black transition text-center ${
+                                className={`py-0.5 px-0.5 rounded text-[10px] font-black transition text-center cursor-pointer ${
                                   isSelected
                                     ? 'bg-emerald-600 text-white shadow-2xs'
-                                    : 'text-slate-400 hover:bg-[#252a36] hover:text-slate-200'
+                                    : 'text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
                                 }`}
                                 title={`Ubah paket ke ${pkg}`}
                               >
@@ -1460,7 +1460,7 @@ export const POSPage: React.FC = () => {
                     )}
 
                     {/* Quantity & Subtotal Controls */}
-                    <div className="flex items-center justify-between pt-1 border-t border-[#32384a]">
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200">
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() =>
@@ -1471,7 +1471,7 @@ export const POSPage: React.FC = () => {
                               item.variantId
                             )
                           }
-                          className="w-6 h-6 rounded-md bg-[#161922] border border-[#32384a] flex items-center justify-center font-bold text-slate-300 hover:bg-[#252a36]"
+                          className="w-6 h-6 rounded-md bg-white border border-slate-300 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100 cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
@@ -1488,7 +1488,7 @@ export const POSPage: React.FC = () => {
                               item.variantId
                             )
                           }
-                          className="w-14 text-center font-bold bg-[#161922] border border-[#32384a] text-slate-100 rounded-md py-0.5 text-xs"
+                          className="w-14 text-center font-bold bg-white border border-slate-300 text-slate-900 rounded-md py-0.5 text-xs focus:border-emerald-600 outline-none"
                         />
 
                         <button
@@ -1500,18 +1500,18 @@ export const POSPage: React.FC = () => {
                               item.variantId
                             )
                           }
-                          className="w-6 h-6 rounded-md bg-[#161922] border border-[#32384a] flex items-center justify-center font-bold text-slate-300 hover:bg-[#252a36]"
+                          className="w-6 h-6 rounded-md bg-white border border-slate-300 flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100 cursor-pointer"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
 
-                        <span className="text-[10px] text-slate-400 font-medium">
+                        <span className="text-[10px] text-slate-500 font-medium">
                           {isCustomKg ? 'kg' : 'bks'}
                         </span>
                       </div>
 
                       <div className="text-right">
-                        <div className="font-black text-slate-100 text-xs">
+                        <div className="font-black text-slate-900 text-xs">
                           Rp {item.subtotal.toLocaleString('id-ID')}
                         </div>
                       </div>
@@ -1522,14 +1522,14 @@ export const POSPage: React.FC = () => {
 
               {cart.length === 0 && (
                 <div className="text-center py-10 text-slate-500">
-                  <div className="w-12 h-12 rounded-2xl bg-[#1e2330] border border-[#32384a] flex items-center justify-center mx-auto mb-2 text-slate-400">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-2 text-slate-400">
                     <ShoppingBag className="w-6 h-6" />
                   </div>
-                  <p className="text-xs font-bold text-slate-300">Keranjang Masih Kosong</p>
+                  <p className="text-xs font-bold text-slate-700">Keranjang Masih Kosong</p>
                   <p className="text-[11px] text-slate-500 mt-1 max-w-[200px] mx-auto leading-relaxed">
                     Klik <strong>1-Klik Quick Add</strong> atau tombol <strong>Keranjang</strong> pada barang.
                   </p>
-                  <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-950/50 px-2.5 py-1 rounded-full font-bold border border-emerald-800/60">
+                  <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full font-bold border border-emerald-200">
                     <Command className="w-3 h-3" />
                     <span>Ketik / untuk cari cepat</span>
                   </div>
@@ -1538,14 +1538,14 @@ export const POSPage: React.FC = () => {
             </div>
 
             {/* Cart Summary & Sticky Checkout Button */}
-            <div className="pt-3 border-t border-[#32384a] space-y-2 shrink-0 bg-[#252a36]">
-              <div className="flex justify-between items-center text-xs text-slate-400">
+            <div className="pt-3 border-t border-slate-200 space-y-2 shrink-0 bg-white">
+              <div className="flex justify-between items-center text-xs text-slate-500">
                 <span>Total Item Belanja:</span>
-                <span className="font-bold text-slate-200">{cartTotalItemsCount} unit</span>
+                <span className="font-bold text-slate-800">{cartTotalItemsCount} unit</span>
               </div>
               <div className="flex justify-between items-baseline">
-                <span className="text-xs font-bold text-slate-300">TOTAL BELANJA:</span>
-                <span className="text-lg font-black text-emerald-400">
+                <span className="text-xs font-bold text-slate-700">TOTAL BELANJA:</span>
+                <span className="text-lg font-black text-emerald-700">
                   Rp {cartTotalAmount.toLocaleString('id-ID')}
                 </span>
               </div>
@@ -1553,10 +1553,10 @@ export const POSPage: React.FC = () => {
               <button
                 onClick={handleOpenCheckout}
                 disabled={cart.length === 0}
-                className={`w-full py-2.5 sm:py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-sm transition active:scale-95 ${
+                className={`w-full py-2.5 sm:py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-xs transition active:scale-95 cursor-pointer ${
                   cart.length === 0
-                    ? 'bg-[#1e2330] text-slate-500 cursor-not-allowed border border-[#32384a]'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'
+                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
                 }`}
               >
                 <span>Proses Pembayaran (F9)</span>
@@ -1569,19 +1569,19 @@ export const POSPage: React.FC = () => {
 
       {/* MOBILE STICKY FLOATING CART BAR (lg:hidden) - Positioned safely above bottom navigation */}
       {cart.length > 0 && !isCheckoutModalOpen && (
-        <div className="lg:hidden fixed bottom-[calc(3.75rem+env(safe-area-inset-bottom))] left-2.5 right-2.5 z-30 bg-[#1e222b] text-slate-100 rounded-2xl p-2.5 sm:p-3 shadow-2xl flex items-center justify-between border border-[#32384a] animate-in slide-in-from-bottom-2 duration-200">
+        <div className="lg:hidden fixed bottom-[calc(3.75rem+env(safe-area-inset-bottom))] left-2.5 right-2.5 z-30 bg-white/95 text-slate-900 rounded-2xl p-2.5 sm:p-3 shadow-2xl flex items-center justify-between border border-slate-200/90 animate-in slide-in-from-bottom-2 duration-200">
           <div className="flex items-center gap-2 sm:gap-2.5">
             <div className="relative">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-xs">
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="absolute -top-1 -right-1 bg-white text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full">
+              <span className="absolute -top-1 -right-1 bg-emerald-700 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full">
                 {cartTotalItemsCount}
               </span>
             </div>
             <div>
-              <div className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Total Belanja</div>
-              <div className="text-xs sm:text-sm font-black text-emerald-400">
+              <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Total Belanja</div>
+              <div className="text-xs sm:text-sm font-black text-emerald-700">
                 Rp {cartTotalAmount.toLocaleString('id-ID')}
               </div>
             </div>
@@ -1591,7 +1591,7 @@ export const POSPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsMobileCartOpen(true)}
-              className="px-2.5 py-1.5 rounded-xl bg-[#252a36] hover:bg-[#2d3444] text-slate-200 text-xs font-bold transition flex items-center gap-1 border border-[#32384a]"
+              className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center gap-1 border border-slate-200 cursor-pointer"
             >
               <span>Lihat ({cart.length})</span>
             </button>
@@ -1609,17 +1609,17 @@ export const POSPage: React.FC = () => {
 
       {/* MOBILE FULL CART DRAWER OVERLAY (lg:hidden) */}
       {isMobileCartOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-end">
-          <div className="bg-white rounded-t-3xl max-h-[85vh] flex flex-col p-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-end">
+          <div className="bg-[#1e293b]/90 backdrop-blur-2xl rounded-t-3xl max-h-[85vh] flex flex-col p-4 shadow-2xl border-t border-slate-700/60 animate-in slide-in-from-bottom duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-700/50">
               <div className="flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-black text-slate-900 text-sm">Keranjang Belanja ({cartTotalItemsCount})</h3>
+                <ShoppingBag className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-black text-slate-100 text-sm">Keranjang Belanja ({cartTotalItemsCount})</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsMobileCartOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-[#1e2330] transition"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1634,7 +1634,7 @@ export const POSPage: React.FC = () => {
                 return (
                   <div
                     key={`mobile-${item.productId}-${item.selectedUnit}-${idx}`}
-                    className="p-2.5 rounded-xl border border-[#32384a] bg-[#1e2330] text-xs space-y-2"
+                    className="p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 text-xs space-y-2"
                   >
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
@@ -1653,7 +1653,7 @@ export const POSPage: React.FC = () => {
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1 border-t border-[#32384a]">
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-700/60">
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() =>
@@ -1664,7 +1664,7 @@ export const POSPage: React.FC = () => {
                               item.variantId
                             )
                           }
-                          className="w-6 h-6 rounded-md bg-[#161922] border border-[#32384a] text-slate-200 flex items-center justify-center font-bold"
+                          className="w-6 h-6 rounded-md bg-slate-950/80 border border-slate-700/60 text-slate-200 flex items-center justify-center font-bold"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
@@ -1678,7 +1678,7 @@ export const POSPage: React.FC = () => {
                               item.variantId
                             )
                           }
-                          className="w-6 h-6 rounded-md bg-[#161922] border border-[#32384a] text-slate-200 flex items-center justify-center font-bold"
+                          className="w-6 h-6 rounded-md bg-slate-950/80 border border-slate-700/60 text-slate-200 flex items-center justify-center font-bold"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
@@ -1693,7 +1693,7 @@ export const POSPage: React.FC = () => {
               })}
             </div>
 
-            <div className="pt-3 border-t border-[#32384a] space-y-2 shrink-0">
+            <div className="pt-3 border-t border-slate-700/60 space-y-2 shrink-0">
               <div className="flex justify-between items-baseline">
                 <span className="text-xs font-bold text-slate-300">TOTAL BELANJA:</span>
                 <span className="text-lg font-black text-emerald-400">
@@ -1704,7 +1704,7 @@ export const POSPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsMobileCartOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-[#32384a] bg-[#1e2330] text-slate-200 text-xs font-bold"
+                  className="flex-1 py-2.5 rounded-xl border border-slate-700/60 bg-slate-800 text-slate-200 text-xs font-bold"
                 >
                   Tutup
                 </button>
@@ -1714,7 +1714,7 @@ export const POSPage: React.FC = () => {
                     setIsMobileCartOpen(false);
                     handleOpenCheckout();
                   }}
-                  className="flex-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5"
+                  className="flex-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-lg flex items-center justify-center gap-1.5"
                 >
                   <span>Proses Pembayaran (F9)</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1727,17 +1727,17 @@ export const POSPage: React.FC = () => {
 
       {/* CHECKOUT MODAL WITH KEYBOARD SHORTCUTS (F1, F3, F4, F8, Enter) */}
       {isCheckoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs">
-          <div className="bg-[#252a36] border border-[#32384a] text-slate-100 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md">
+          <div className="bg-white border border-slate-200 text-slate-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
             
-            <div className="bg-[#1e222b] text-slate-100 px-5 py-3.5 flex items-center justify-between border-b border-[#32384a]">
+            <div className="bg-slate-100/90 text-slate-900 px-5 py-4 flex items-center justify-between border-b border-slate-200">
               <div>
                 <h3 className="font-black text-base">Pembayaran Transaksi</h3>
-                <p className="text-xs text-slate-400">Total: Rp {cartTotalAmount.toLocaleString('id-ID')}</p>
+                <p className="text-xs text-slate-500 font-semibold">Total: Rp {cartTotalAmount.toLocaleString('id-ID')}</p>
               </div>
               <button
                 onClick={() => setIsCheckoutModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-slate-400 hover:text-slate-700 p-1 text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -1746,51 +1746,51 @@ export const POSPage: React.FC = () => {
             <div className="p-5 overflow-y-auto space-y-4">
               
               {checkoutError && (
-                <div className="bg-red-950/40 border border-red-800/60 text-red-300 p-3 rounded-xl text-xs font-semibold flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
+                <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                   <span>{checkoutError}</span>
                 </div>
               )}
 
               <div>
-                <label className="text-xs font-bold text-slate-300 block mb-1.5">
+                <label className="text-xs font-extrabold text-slate-700 block mb-1.5">
                   Metode Pembayaran:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('tunai')}
-                    className={`py-2.5 px-3 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-2 transition ${
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
                       paymentMethod === 'tunai'
-                        ? 'border-emerald-500 bg-emerald-950/40 text-emerald-400'
-                        : 'border-[#32384a] bg-[#1e2330] hover:bg-[#202738] text-slate-300'
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-xs'
+                        : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700'
                     }`}
                   >
-                    <Banknote className="w-4 h-4" />
+                    <Banknote className="w-4 h-4 text-emerald-600" />
                     <span>TUNAI</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('utang')}
-                    className={`py-2.5 px-3 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-2 transition ${
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
                       paymentMethod === 'utang'
-                        ? 'border-amber-500 bg-amber-950/40 text-amber-300'
-                        : 'border-[#32384a] bg-[#1e2330] hover:bg-[#202738] text-slate-300'
+                        ? 'border-amber-500 bg-amber-50 text-amber-900 shadow-xs'
+                        : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700'
                     }`}
                   >
-                    <CreditCard className="w-4 h-4" />
+                    <CreditCard className="w-4 h-4 text-amber-600" />
                     <span>UTANG / BON</span>
                   </button>
                 </div>
               </div>
 
               {paymentMethod === 'tunai' && (
-                <div className="space-y-3 bg-[#1e2330] p-3.5 rounded-xl border border-[#32384a]">
+                <div className="space-y-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                   <div>
-                    <label className="text-xs font-semibold text-slate-300 flex justify-between items-center mb-1">
+                    <label className="text-xs font-bold text-slate-700 flex justify-between items-center mb-1">
                       <span>Uang Tunai Diterima (F8):</span>
-                      <span className="text-[10px] text-slate-400">Tekan Enter untuk konfirmasi</span>
+                      <span className="text-[10px] text-slate-500">Tekan Enter untuk konfirmasi</span>
                     </label>
                     <input
                       ref={cashInputRef}
@@ -1805,7 +1805,7 @@ export const POSPage: React.FC = () => {
                           }
                         }
                       }}
-                      className="w-full bg-[#161922] border border-[#32384a] text-slate-100 rounded-xl px-3 py-2.5 text-base font-black focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2.5 text-base font-black focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
                       placeholder=""
                     />
                   </div>
@@ -1815,52 +1815,52 @@ export const POSPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setCashReceived(cartTotalAmount)}
-                      className="py-1.5 px-2 bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/60 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 rounded-lg text-xs font-extrabold cursor-pointer"
                     >
                       Uang Pas (F1)
                     </button>
                     <button
                       type="button"
                       onClick={() => setCashReceived(20000)}
-                      className="py-1.5 px-2 bg-[#252a36] hover:bg-[#2d3444] border border-[#32384a] text-slate-200 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Rp 20.000
                     </button>
                     <button
                       type="button"
                       onClick={() => setCashReceived(50000)}
-                      className="py-1.5 px-2 bg-[#252a36] hover:bg-[#2d3444] border border-[#32384a] text-slate-200 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Rp 50.000 (F3)
                     </button>
                     <button
                       type="button"
                       onClick={() => setCashReceived(100000)}
-                      className="py-1.5 px-2 bg-[#252a36] hover:bg-[#2d3444] border border-[#32384a] text-slate-200 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Rp 100.000 (F4)
                     </button>
                     <button
                       type="button"
                       onClick={() => setCashReceived(200000)}
-                      className="py-1.5 px-2 bg-[#252a36] hover:bg-[#2d3444] border border-[#32384a] text-slate-200 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Rp 200.000
                     </button>
                     <button
                       type="button"
                       onClick={() => setCashReceived(500000)}
-                      className="py-1.5 px-2 bg-[#252a36] hover:bg-[#2d3444] border border-[#32384a] text-slate-200 rounded-lg text-xs font-bold"
+                      className="py-1.5 px-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Rp 500.000
                     </button>
                   </div>
 
-                  <div className="pt-2 border-t border-[#32384a] flex justify-between items-baseline">
-                    <span className="text-xs font-bold text-slate-400">KEMBALIAN:</span>
+                  <div className="pt-2 border-t border-slate-200 flex justify-between items-baseline">
+                    <span className="text-xs font-bold text-slate-600">KEMBALIAN:</span>
                     <span
                       className={`text-base font-black ${
-                        cashReceived >= cartTotalAmount ? 'text-emerald-400' : 'text-rose-400'
+                        cashReceived >= cartTotalAmount ? 'text-emerald-700' : 'text-rose-600'
                       }`}
                     >
                       {cashReceived >= cartTotalAmount
@@ -1872,9 +1872,9 @@ export const POSPage: React.FC = () => {
               )}
 
               {paymentMethod === 'utang' && (
-                <div className="space-y-3 bg-amber-950/20 p-3.5 rounded-xl border border-amber-900/50">
+                <div className="space-y-3 bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
                   <div>
-                    <label className="text-xs font-bold text-amber-300 block mb-1">
+                    <label className="text-xs font-bold text-amber-900 block mb-1">
                       Nama Pelanggan (Wajib):
                     </label>
                     <input
@@ -1882,29 +1882,29 @@ export const POSPage: React.FC = () => {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder=""
-                      className="w-full bg-[#161922] border border-amber-800/60 text-slate-100 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-amber-500"
+                      className="w-full bg-white border border-amber-300 text-slate-900 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-amber-600"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-amber-300 block mb-1">
+                    <label className="text-xs font-bold text-amber-900 block mb-1">
                       Jatuh Tempo:
                     </label>
                     <input
                       type="date"
                       value={dueDate}
                       onChange={(e) => setDueDate(e.target.value)}
-                      className="w-full bg-[#161922] border border-amber-800/60 text-slate-100 rounded-xl px-3 py-2 text-xs font-semibold"
+                      className="w-full bg-white border border-amber-300 text-slate-900 rounded-xl px-3 py-2 text-xs font-semibold"
                     />
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="p-4 bg-[#1e222b] border-t border-[#32384a] flex gap-2">
+            <div className="p-4 bg-slate-100/90 border-t border-slate-200 flex gap-2">
               <button
                 type="button"
                 onClick={() => setIsCheckoutModalOpen(false)}
-                className="flex-1 py-2.5 rounded-xl border border-[#32384a] bg-[#1e2330] hover:bg-[#252a36] text-slate-300 text-xs font-bold"
+                className="flex-1 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold cursor-pointer"
               >
                 Batal (Esc)
               </button>
@@ -1912,7 +1912,7 @@ export const POSPage: React.FC = () => {
                 type="button"
                 onClick={handleProcessCheckout}
                 disabled={paymentMethod === 'tunai' && cashReceived < cartTotalAmount}
-                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-1.5 transition active:scale-95 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed cursor-pointer"
               >
                 <CheckCircle className="w-4 h-4" />
                 <span>Konfirmasi Bayar (Enter)</span>
@@ -1925,7 +1925,7 @@ export const POSPage: React.FC = () => {
       {/* Packaging Variant Selection Modal */}
       {selectedVariantProduct && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md"
           onKeyDown={(e) => {
             if (e.key === 'Escape') setSelectedVariantProduct(null);
             if (e.key === 'Enter') handleAddVariantsToCart();
@@ -1942,11 +1942,11 @@ export const POSPage: React.FC = () => {
           }}
           tabIndex={0}
         >
-          <div className="bg-[#252a36] border border-[#32384a] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <div className="bg-[#1e222b] text-slate-100 px-5 py-3.5 flex items-center justify-between border-b border-[#32384a]">
+          <div className="bg-white border border-slate-200 text-slate-900 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="bg-slate-100/90 text-slate-900 px-5 py-4 flex items-center justify-between border-b border-slate-200">
               <div>
                 <h3 className="font-black text-base">{selectedVariantProduct.name}</h3>
-                <p className="text-xs text-slate-400">Pilih Varian Kemasan / Eceran (Gunakan tombol angka 1-9)</p>
+                <p className="text-xs text-slate-500 font-medium">Pilih Varian Kemasan / Eceran (Gunakan tombol angka 1-9)</p>
               </div>
               <button onClick={() => setSelectedVariantProduct(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>

@@ -42,12 +42,12 @@ export const Header: React.FC = () => {
       )}
 
       {/* Main Header with Logo Integrity & Compact Mobile Height & Safe Area Notch Padding */}
-      <header className="bg-[#1e222b] border-b border-[#2f3646] sticky top-0 z-40 shadow-xs pt-[max(0.5rem,env(safe-area-inset-top))]">
+      <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/80 sticky top-0 z-40 shadow-xs pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="max-w-7xl mx-auto px-2.5 sm:px-6 h-13 sm:h-15 flex items-center justify-between gap-1.5 sm:gap-2">
           
           {/* Logo & Store Name - Compact & Proportional on Mobile */}
           <div className="flex items-center gap-2 sm:gap-3 select-none min-w-0">
-            <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 p-1 rounded-lg bg-white/95 border border-slate-600/50 flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
+            <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 p-1 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
               <img 
                 src="/assets/aistudio/logo_6f62622a.png" 
                 alt="PANDIR STORE" 
@@ -56,15 +56,15 @@ export const Header: React.FC = () => {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <h1 className="text-xs sm:text-base font-extrabold tracking-tight text-slate-100 leading-tight truncate">
+                <h1 className="text-xs sm:text-base font-extrabold tracking-tight text-slate-900 leading-tight truncate">
                   PANDIR STORE
                 </h1>
-                <span className="inline-block px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded">
+                <span className="inline-block px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md">
                   POS
                 </span>
               </div>
-              <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium hidden sm:block truncate">
-                Sistem Kasir & Manajemen Toko Sembako
+              <p className="text-[9px] sm:text-[10px] text-slate-500 font-medium hidden sm:block truncate">
+                Sistem Kasir &amp; Manajemen Toko Sembako
               </p>
             </div>
           </div>
@@ -72,31 +72,31 @@ export const Header: React.FC = () => {
           {/* Right Action Icons & Badges */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             
-            {/* Status Indicators - Compact on Mobile */}
-            <div className="flex items-center gap-1.5 bg-[#161922] px-2 py-1 rounded-lg text-[10px] font-bold text-slate-400 border border-[#2f3646]">
+            {/* Status Indicators - Clean Light Mode Pill */}
+            <div className="flex items-center gap-1.5 bg-slate-100/90 backdrop-blur-md px-2 py-1 rounded-xl text-[10px] font-bold text-slate-700 border border-slate-200 shadow-2xs">
               {isOnline ? (
-                <span className="flex items-center gap-1 text-emerald-400" title="Online (Terkoneksi)">
-                  <Wifi className="w-3 h-3" />
-                  <span className="hidden md:inline uppercase tracking-wider text-[9px]">Online</span>
+                <span className="flex items-center gap-1 text-emerald-700" title="Online (Terkoneksi)">
+                  <Wifi className="w-3 h-3 text-emerald-600" />
+                  <span className="hidden md:inline uppercase tracking-wider text-[9px] font-bold">Online</span>
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-amber-400" title="Offline Mode">
-                  <WifiOff className="w-3 h-3" />
-                  <span className="hidden md:inline uppercase tracking-wider text-[9px]">Offline</span>
+                <span className="flex items-center gap-1 text-amber-700" title="Offline Mode">
+                  <WifiOff className="w-3 h-3 text-amber-600" />
+                  <span className="hidden md:inline uppercase tracking-wider text-[9px] font-bold">Offline</span>
                 </span>
               )}
 
-              <span className="w-px h-2.5 bg-slate-700/80 mx-0.5"></span>
+              <span className="w-px h-2.5 bg-slate-300 mx-0.5"></span>
 
               {isFirebaseActive ? (
-                <span className="flex items-center gap-1 text-sky-400" title="Cloud Database">
-                  <Database className="w-3 h-3" />
-                  <span className="hidden lg:inline uppercase tracking-wider text-[9px]">Cloud</span>
+                <span className="flex items-center gap-1 text-sky-700" title="Cloud Database">
+                  <Database className="w-3 h-3 text-sky-600" />
+                  <span className="hidden lg:inline uppercase tracking-wider text-[9px] font-bold">Cloud</span>
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-slate-400" title="Local Storage">
-                  <Database className="w-3 h-3" />
-                  <span className="hidden lg:inline uppercase tracking-wider text-[9px]">Local</span>
+                <span className="flex items-center gap-1 text-slate-600" title="Local Storage">
+                  <Database className="w-3 h-3 text-slate-500" />
+                  <span className="hidden lg:inline uppercase tracking-wider text-[9px] font-bold">Local</span>
                 </span>
               )}
             </div>
@@ -105,30 +105,30 @@ export const Header: React.FC = () => {
             {isInstallable && !isInstalled && (
               <button
                 onClick={install}
-                className="hidden sm:flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-xs active:scale-95 transition"
+                className="hidden sm:flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-xl text-[11px] font-bold shadow-xs active:scale-95 transition cursor-pointer"
               >
                 <Download className="w-3 h-3" />
                 <span>Install</span>
               </button>
             )}
 
-            {/* User Profile Pill - Clean & Minimal */}
+            {/* User Profile Pill - Clean Light Mode */}
             {currentUser && (
-              <div className="flex items-center gap-1 pl-1 sm:pl-1.5 border-l border-[#2f3646]">
-                <div className="flex items-center gap-1.5 bg-[#161922] text-slate-200 border border-[#2f3646] px-2 py-1 rounded-lg">
+              <div className="flex items-center gap-1 pl-1 sm:pl-1.5 border-l border-slate-200">
+                <div className="flex items-center gap-1.5 bg-slate-100 text-slate-800 border border-slate-200 px-2 py-1 rounded-xl shadow-2xs">
                   {isAdmin ? (
-                    <ShieldCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                   ) : (
-                    <User className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                    <User className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                   )}
-                  <span className="text-[10px] sm:text-[11px] font-bold max-w-[65px] sm:max-w-[80px] truncate uppercase hidden xs:inline-block">
+                  <span className="text-[10px] sm:text-[11px] font-extrabold max-w-[65px] sm:max-w-[80px] truncate uppercase hidden xs:inline-block">
                     {currentUser.name.split(' ')[0]}
                   </span>
                 </div>
 
                 <button
                   onClick={() => logout()}
-                  className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-[#252a36] rounded-lg transition"
+                  className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-xl transition cursor-pointer"
                   title="Logout"
                 >
                   <LogOut className="w-3.5 h-3.5" />
