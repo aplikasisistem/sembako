@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Product, CartItem, PaymentMethod, RetailPackagingVariant } from '../types';
 import { storage } from '../services/storage';
 import { sound } from '../services/audio';
+import { voicePOSController, VoicePOSResult } from '../services/voicePOS';
 import { BarcodeScannerModal } from '../components/BarcodeScannerModal';
 import { ThermalReceipt } from '../components/ThermalReceipt';
 import { 
@@ -274,104 +275,60 @@ export const POSPage: React.FC = () => {
     return text;
   };
 
-  // Setup Voice-to-Text Search Web Speech API
-  useEffect(() => {
-    const SpeechRecognition = 
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  const showVoiceToast = (msg: string) => {
+    setVoiceToast(msg);
+    setTimeout(() => setVoiceToast(null), 3800);
+  };
 
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.lang = 'id-ID';
-
-      recognition.onresult = (event: any) => {
-        let currentInterim = '';
-        let finalTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          const item = event.results[i];
-          if (item.isFinal) {
-            finalTranscript += item[0].transcript;
-          } else {
-            currentInterim += item[0].transcript;
-          }
-        }
-
-        if (currentInterim) {
-          const cleanInterim = cleanVoiceQuery(currentInterim);
-          setInterimTranscript(cleanInterim);
-          // Dynamically filter search query in real-time as user speaks
-          setSearchQuery(cleanInterim);
-        }
-
-        if (finalTranscript) {
-          const clean = cleanVoiceQuery(finalTranscript);
-          setInterimTranscript('');
-          handleVoiceSearchInput(clean);
-        }
-      };
-
-      recognition.onerror = (e: any) => {
-        console.warn('Speech recognition error:', e);
-        setIsListeningVoice(false);
-        setInterimTranscript('');
-      };
-
-      recognition.onend = () => {
-        setIsListeningVoice(false);
-        setInterimTranscript('');
-      };
-
-      speechRecognitionRef.current = recognition;
+  /**
+   * Handle result from continuous Indonesian Voice POS Controller
+   */
+  const handleVoicePOSResult = (result: VoicePOSResult) => {
+    if (result.action === 'ADD_TO_CART' && result.product) {
+      const added = handleAddToCart(result.product, result.unit, result.quantity || 1, result.variantId, {
+        toastPrefix: '🎤 Kasir Suara'
+      });
+      if (added) {
+        sound.playVoiceChime();
+        showVoiceToast(result.message);
+      }
+    } else if (result.action === 'CLEAR_CART') {
+      clearCart();
+      sound.playVoiceChime();
+      showVoiceToast(result.message);
+    } else if (result.action === 'CHECKOUT_ATTEMPT') {
+      sound.playWarningSound();
+      showVoiceToast(`🔒 ${result.message}`);
+    } else if (result.action === 'NOT_FOUND') {
+      sound.playWarningSound();
+      showVoiceToast(`⚠️ ${result.message}`);
+    } else if (result.action === 'ERROR') {
+      showVoiceToast(`⚠️ ${result.message}`);
     }
-  }, [products]);
+  };
 
   const toggleVoiceRecognition = () => {
-    const SpeechRecognition = 
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      alert('Browser Anda belum mendukung input suara Web Speech API. Gunakan Google Chrome atau Microsoft Edge.');
+    if (!voicePOSController.isSupported()) {
+      alert('Browser Anda belum mendukung input suara Web Speech API (Gunakan Google Chrome / MS Edge).');
       return;
     }
 
     if (isListeningVoice) {
-      if (speechRecognitionRef.current) {
-        try {
-          speechRecognitionRef.current.stop();
-        } catch (_) {}
-      }
+      voicePOSController.stop();
       setIsListeningVoice(false);
       setInterimTranscript('');
-      showVoiceToast('Pencarian suara dimatikan.');
+      showVoiceToast('Mode Kasir Suara dinonaktifkan.');
     } else {
-      try {
-        if (!speechRecognitionRef.current) {
-          const recognition = new SpeechRecognition();
-          recognition.continuous = false;
-          recognition.interimResults = true;
-          recognition.lang = 'id-ID';
-          speechRecognitionRef.current = recognition;
+      voicePOSController.start(
+        products,
+        handleVoicePOSResult,
+        (listening, interimText) => {
+          setIsListeningVoice(listening);
+          setInterimTranscript(interimText);
         }
-        speechRecognitionRef.current.start();
-        setIsListeningVoice(true);
-        setInterimTranscript('');
-        sound.playVoiceChime();
-        showVoiceToast('🎤 Mendengarkan... Ucapkan nama produk (contoh: "Beras Ramos", "Minyak Sunco")');
-        if (searchBarRef.current) {
-          searchBarRef.current.focus();
-        }
-      } catch (err) {
-        console.warn('Voice start error:', err);
-        setIsListeningVoice(false);
-      }
+      );
+      showVoiceToast('🎤 Mode Kasir Suara Kontinyu Aktif! Sebutkan produk (misal: "minyak 1", "gula 2 setengah kg", "beras 5 kilo")');
     }
-  };
-
-  const showVoiceToast = (msg: string) => {
-    setVoiceToast(msg);
-    setTimeout(() => setVoiceToast(null), 3500);
   };
 
   /**
@@ -2048,6 +2005,14 @@ export const POSPage: React.FC = () => {
           isOpen={isReceiptOpen}
           onClose={() => setIsReceiptOpen(false)}
         />
+      )}
+
+      {/* Voice Notification Toast */}
+      {voiceToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white font-bold text-xs px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>{voiceToast}</span>
+        </div>
       )}
     </div>
   );
